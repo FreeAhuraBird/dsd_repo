@@ -1,5 +1,5 @@
 # dsd_project
-School-Project about Distributed Systems.
+PRIVATE School-Project about Distributed Systems.
 
 ## Usage (for dsd_project)
 
