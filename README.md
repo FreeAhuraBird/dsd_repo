@@ -1,7 +1,7 @@
 # dsd_project
 School-Project about Distributed Systems.
 
-## Usage
+## Usage (for dsd_project)
 
 To stay updated with the latest code changes and collaborate effectively, please follow these guidelines:
 
