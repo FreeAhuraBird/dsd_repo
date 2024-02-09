@@ -3,6 +3,8 @@ School-Project about Distributed Systems.
 
 ## Usage (for dsd_project)
 
+Dont forget to change to feature branch before making changes to code.
+
 To stay updated with the latest code changes and collaborate effectively, please follow these guidelines:
 
 1. **Update Your Local Branch**:
@@ -13,7 +15,7 @@ To stay updated with the latest code changes and collaborate effectively, please
    - Replace `<branch-name>` with the name of the branch you're working on.
    - 
 2. **Commit Frequently**:
-   - After each coding session or when you make significant changes, commit your changes to the repository. This ensures that other participants can access your work and collaborate effectively.
+   - After each coding session or when you make significant changes, commit your changes to the repository (feature branch). This ensures that other participants can access your work and collaborate effectively.
    - Use descriptive commit messages to provide context about the changes you've made.
 
 3. **Collaboration**:
