@@ -12,7 +12,7 @@ To stay updated with the latest code changes and collaborate effectively, please
      ```
      git pull origin <branch-name>
      ```
-   - Replace `<branch-name>` with the name of the branch you're working on.
+   - Replace `<branch-name>` with the name of the branch you're working on (probably feature branch).
    - 
 2. **Commit Frequently**:
    - After each coding session or when you make significant changes, commit your changes to the repository (feature branch). This ensures that other participants can access your work and collaborate effectively.
