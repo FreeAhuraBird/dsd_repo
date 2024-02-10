@@ -1,4 +1,4 @@
-# dsd_project
+# dsd project repo
 PRIVATE School-Project about Distributed Systems.
 
 ## Usage (for dsd_project)
