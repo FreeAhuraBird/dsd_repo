@@ -1,6 +1,10 @@
+/* Den här sidan innehåller css, allt styling för sidan. Jag bara experimenterade och grejade här och där med hjälp av
+w3schools: https://www.w3schools.com/css/default.asp och lite annat online material. */
+
 /* När det står height: 100vh; till exempel istället för auto eller 100% 
 betyder det bara att "viewport height" (vh), vilket är det som användaren kan se, är fyllt 100%. Man använder det i css
 för att justera webbsidan för mobil användare och liknande. */
+
 
 * {
 margin: 0;
@@ -84,7 +88,7 @@ Man kan ändra width och height till sin preferens. */
     
 }
 
-/* Det här är där vi lägger in lösenorder */
+/* Det här är där vi lägger in lösenordet */
 .password-input {
     position: relative;
     display: flex;
@@ -104,14 +108,14 @@ Man kan ändra width och height till sin preferens. */
 .toggle-password {
     display: flex;
     position: absolute; /* absolute gör att ögon knappen ligger inne i password input fielden. */
-    right: -145px; /* kontrollerar hur lång åt höger som knappen befinner sig */
+    right: -145px; /* kontrollerar hur långt åt höger som knappen befinner sig */
     top: 34%; /* hur långt upp eller ner knappen befinner sig */
     transform: translateY(-50%); /* hur långt upp eller ner knappen befinner sig relativt till sidan */
     background: transparent !important; /* Tvinga sidan att göra transparent bakgrund för knappen (använd inte detta mycket) */
 }
 
 .toggle-password svg {
-    stroke: #000000;
+    stroke: #000000; /* Färg för "ögon knappen" */
 }
 
 
