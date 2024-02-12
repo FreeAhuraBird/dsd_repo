@@ -1,4 +1,4 @@
-# dsd_project
+# dsd project repo
 PRIVATE School-Project about Distributed Systems.
 
 För att köra detta projekt behöver du Node.js och npm installerat på din dator. Gör såhär:
