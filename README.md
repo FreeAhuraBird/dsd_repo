@@ -3,7 +3,7 @@ PRIVATE School-Project about Distributed Systems.
 
 ## Usage (for dsd_project)
 
-Dont forget to change to feature branch before making changes to code.
+Dont forget to change to develop branch before making changes to code. 
 
 To stay updated with the latest code changes and collaborate effectively, please follow these guidelines:
 
