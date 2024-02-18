@@ -31,6 +31,42 @@ To stay updated with the latest code changes and collaborate effectively, please
 3. **Collaboration**:
    - If you encounter any issues or have questions about the project, feel free to reach out to other participants or create an issue on the repository.
    - Collaboration is key to the success of the project, so make sure to communicate and coordinate with other contributors.
+  
+## Userful Commands - Explained
+
+   - Update local branch (do this every coding session). Main or develop. Note: Main / develop branch may have different code. Please check which one you want to build on.
+     ```
+     git pull origin <branch-name>
+     ```
+     
+   - Chech which branches you have on your local repo and which branch you are in.
+     ```
+     git branch
+     ```
+     
+   - Change current branch
+     ```
+     git checkout <branch-name>
+     ```
+     
+   - See modifications made during your coding session.
+     ```
+     git status
+     ```
+     
+   - Add modified files to your commition
+     ```
+     git add <modified-file-name>
+     ```
+   - Commit added files. Write a commit message with title and description on what changes you have made and why. Add issue if needed. If no issue, write: "Issue: None" in the end of commit message.
+     ```
+     git commit
+     ```
+   - Push commit to repo on github. Push to develop.
+     ```
+     git push origin <branch-name>
+     ```
+     
 
 ## Additional Information
 
