@@ -1,24 +1,126 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="style.css">
-
 <html>
 <head>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!--Logo måste läggas till på vänster sidan samt en javascript carousel.-->
+
+
     <div class="toolbar">
+
+        <!-- Här är en placeholder logo-->
+        <div class="logo">
+            <img src="images/creative_studio_placeholder_logo.png" alt="Creative Studio Logo">
+        </div>
         <div class="links">
-            <a href="home.html">Home</a>
+            <a href="home_user.html">Home</a>
             <a href="movies.html">Movies</a>
             <a href="art.html">Art</a>
             <a href="music.html">Music</a>
-            <a href="about">About</a>
+            <a href="about.html">About</a>
         </div>
+
+        <!-- Den här koden flyttar på elementen i navbaren, genom att lägga en tom div åt höger. (Fråga Ali om du undrar)-->
+        <div class="spacer"></div>
     </div>
 
-    <div>
-        <form class="input"   action="search.php" method="post">
-            <input type="text" placeholder="Username">
-            <input type="text" placeholder="Password">
-            <input type="text" placeholder="Email">
-            <button class="button" type="submit" name="sign-up">Sign Up</button>
-    </div>
-</head>
+    <form class="input" id="signup-form">
+        <label for="profile-picture">Profile Picture:</label>
+        <div id="profile-picture" class="profile-picture">
+            <img id="profile-picture-preview" src="images/cat_placeholder.jpg" alt="Profile Picture">
+        </div>
+        <input type="file" id="profile-picture-input" name="profile-picture" style="display: none;">
+        <input type="text" id="signup-username" placeholder="Username" required minlength="4" maxlength="20">
+        <input type="text" id="signup-password" placeholder="Password" required minlength="8">
+        <span id="password-error" style="color: red;"></span>
+        <input type="text" id="signup-email" placeholder="Email" required>
+
+        <div class="color-options">
+            <p>Choose a Color Palette:</p>
+            <div class="palette-container">
+                <label>
+                    <div class="color-palette blue"></div>
+                    <input type="radio" name="color" value="blue">
+                </label>
+                <label>
+                    <div class="color-palette beige"></div>
+                    <input type="radio" name="color" value="beige" checked>
+                </label>
+                <label>
+                    <div class="color-palette red"></div>
+                    <input type="radio" name="color" value="red">
+                </label>
+                <label>
+                    <div class="color-palette yellow"></div>
+                    <input type="radio" name="color" value="yellow">
+                </label>
+            </div>
+        </div>
+        
+        <button class="button" type="submit" name="sign-up">Sign Up</button>
+    </form>
+
+    <!-- Javascript -->
+    <script>
+        // En event listener är en funktion som väntar på att något händer för att utföra en uppgift
+        // t.ex. när användaren klickar på en knapp. Det funkar alltså ungefär som en if funktion.
+
+
+        // En function som uppdatedar body klassen när användaren byter färg
+        function updateBodyClass() {
+            var checkedColor = document.querySelector('input[name="color"]:checked').value;
+            document.body.className = checkedColor;
+        }
+    
+        // Event listener för radio knapparna
+        document.querySelectorAll('input[name="color"]').forEach(function(input) {
+            input.addEventListener('change', updateBodyClass);
+        });
+    
+        // Event listener för när användaren klickar på profilbilden
+        document.getElementById('profile-picture').addEventListener('click', function() {
+            document.getElementById('profile-picture-input').click();
+        });
+    
+        // event listener för att uppdatera profilbilden
+        document.getElementById('profile-picture-input').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profile-picture-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(this.files[0]);
+        });
+
+        // Den här är till för att både kolla om lösenordet innehåller en stor bokstav OCH låter dig skapa
+        // ett låtsas konto. Tills dess att vi implementerat våran backend.
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+    
+            var username = document.getElementById('signup-username').value;
+            var password = document.getElementById('signup-password').value;
+            var email = document.getElementById('signup-email').value;
+            var color = document.querySelector('input[name="color"]:checked').value;
+    
+            // Check if password contains a capital letter
+            if (!/[A-Z]/.test(password)) {
+                document.getElementById('password-error').textContent = 'Lösenordet måste innehålla minst en stor bokstav.';
+                return;
+            }
+    
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
+            localStorage.setItem('email', email);
+            localStorage.setItem('color', color);
+            localStorage.setItem('profilePicture', document.getElementById('profile-picture-preview').src);
+            localStorage.setItem('isLoggedIn', 'true');
+    
+            alert('Signup successful!');
+            window.location.href = 'home_user.html'; // Redirect to home page
+        });
+    
+        // Ropa på funktionen för att uppdatera body classen
+        updateBodyClass();
+    </script>
+</body>
 </html>
