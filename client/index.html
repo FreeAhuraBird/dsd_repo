@@ -6,7 +6,6 @@
 <body>
     <!--Logo måste läggas till på vänster sidan samt en javascript carousel.-->
 
-
     <div class="toolbar">
 
         <!-- Här är en placeholder logo-->
@@ -20,9 +19,9 @@
             <a href="music.html">Music</a>
             <a href="about.html">About</a>
         </div>
-
-        <!-- Den här koden flyttar på elementen i navbaren, genom att lägga en tom div åt höger. (Fråga Ali om du undrar)-->
-        <div class="spacer"></div>
+        <div class="profile">
+            <img id="toolbar-profile-picture" src="images/cat_placeholder.jpg" alt="Profile Picture">
+        </div>
     </div>
 
     <form class="input" id="signup-form">
@@ -117,6 +116,16 @@
     
             alert('Signup successful!');
             window.location.href = 'home_user.html'; // Redirect to home page
+        });
+
+        document.getElementById('profile-picture-input').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newProfilePicture = e.target.result;
+                document.getElementById('profile-picture-preview').src = newProfilePicture;
+                document.getElementById('toolbar-profile-picture').src = newProfilePicture;
+            };
+            reader.readAsDataURL(this.files[0]);
         });
     
         // Ropa på funktionen för att uppdatera body classen

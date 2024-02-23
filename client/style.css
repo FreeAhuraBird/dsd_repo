@@ -204,5 +204,20 @@ color: #ddd;
    background: linear-gradient(25deg, rgba(25,82,156,1) 0%, rgba(255,149,149,1) 70%);
 }
 
+.profile {
+   height: 50px;
+   width: 50px;
+   border-radius: 50%;
+   overflow: hidden;
+   margin-left: auto;
+}
 
+#toolbar-profile-picture {
+   width: 100%;
+   height: 100%;
+   transition: transform 0.3s ease-in-out;
+}
 
+#toolbar-profile-picture:hover {
+   transform: scale(1.1);
+}
