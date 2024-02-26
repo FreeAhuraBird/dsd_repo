@@ -221,3 +221,90 @@ color: #ddd;
 #toolbar-profile-picture:hover {
    transform: scale(1.1);
 }
+
+.image-container {
+   position: relative;
+}
+
+.save-button {
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   display: none;
+   background-color: #4B0082;
+   color: white;
+   border: none;
+   border-radius: 50px; /* Runda hörn */
+   padding: 10px 20px; /* Denna gör knappen större */
+   font-size: 16px;
+   transition: background 0.5s;
+   box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* 3D effekt med en shadow */
+   overflow: hidden;
+   cursor: pointer;
+}
+
+/* Den här delen har o göra med animationen av knappen */
+.save-button:before {
+   content: "";
+   position: absolute;
+   top: -50%;
+   left: -50%;
+   width: 200%;
+   height: 200%;
+   background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+   background-size: 200%;
+   transform: rotate(30deg);
+   pointer-events: none; 
+   animation: shine 7s infinite linear;
+}
+
+@keyframes shine {
+   from {background-position: -200% -200%;}
+   to {background-position: 200% 200%;}
+}
+
+.save-button:hover {
+   background-color: #800080; /* Ändrar färgen av save knappen när man hovrar över den */
+   transform: scale(1.08); /* Gör knappen 8% större när du hovrar över den */
+   transform-origin: top right;
+   transition: transform 0.2s ease-in-out; /* Ge en smooth animation när den blir större */
+}
+
+.image-container:hover .save-button {
+   display: block;
+}
+
+.card:hover .save-button {
+   display: block;
+}
+
+.submenu {
+   display: none;
+   position: absolute;
+   top: 50px; /* submenyn kommer att visas 50px under knappen */
+   right: 10px;
+   background-color: #ffffff;
+   color: #4B0082;
+   padding: 20px;
+   border-radius: 5px;
+   box-shadow: 0 10px 20px rgba(75, 0, 130, 0.2);
+   backdrop-filter: blur(10px);
+}
+
+.submenu a {
+   color: #4B0082;
+   text-decoration: none;
+   display: block;
+   margin-bottom: 15px;
+   padding: 10px;
+   border-radius: 5px;
+   transition: box-shadow 0.3s ease;
+}
+
+.submenu a:hover {
+   box-shadow: 0 0 10px 5px rgba(75, 0, 130, 0.5);
+}
+
+.save-button:active + .submenu, .submenu:hover {
+   display: block;
+}

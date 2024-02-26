@@ -78,23 +78,43 @@
         <div class="grid">
             <!-- Add your card elements here -->
             <div class="card">
-                <a href="images/image1.jpg" data-lightbox="image-1" data-title="Card 1">
-                    <img src="images/image1.jpg" alt="Image 1">
-                </a>
+                <div class="image-container">
+                    <a href="images/image1.jpg" data-lightbox="image-1" data-title="Card 1">
+                        <img src="images/image1.jpg" alt="Image 1">
+                    </a>
+                    <button class="button save-button">Save</button>
+                    <div class="submenu">
+                        <a href="#">Make New Board</a>
+                        <a href="https://www.google.com">Google</a>
+                        <a href="https://www.stackoverflow.com">stackoverflow</a>
+                    </div>
+                </div>
                 <h3>Card 1</h3>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
             <div class="card">
-                <a href="images/image2.jpg" data-lightbox="image-2" data-title="Card 2">
-                    <img src="images/image2.jpg" alt="Image 2">
-                </a>
+                <div class="image-container">
+                    <a href="images/image2.jpg" data-lightbox="image-2" data-title="Card 2">
+                        <img src="images/image2.jpg" alt="Image 2">
+                    </a>
+                    <button class="button save-button">Save</button>
+                    <div class="submenu">
+                        <a href="#">Make New Board</a>
+                    </div>
+                </div>
                 <h3>Card 2</h3>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
             <div class="card">
-                <a href="images/image3.jpg" data-lightbox="image-3" data-title="Card 3">
-                    <img src="images/image3.jpg" alt="Image 3">
-                </a>
+                <div class="image-container">
+                    <a href="images/image3.jpg" data-lightbox="image-3" data-title="Card 3">
+                        <img src="images/image3.jpg" alt="Image 3">
+                    </a>
+                    <button class="button save-button">Save</button>
+                    <div class="submenu">
+                        <a href="#">Make New Board</a>
+                    </div>
+                </div>
                 <h3>Card 3</h3>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
@@ -118,6 +138,46 @@
         if (profilePicture) {
             document.getElementById('toolbar-profile-picture').src = profilePicture;
         }
+
+        var saveButtons = document.querySelectorAll('.save-button');
+
+        saveButtons.forEach(function(button) {
+            var submenu = button.nextElementSibling;
+            submenu.style.display = 'none';
+
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
+
+                var otherSubmenus = document.querySelectorAll('.submenu');
+                otherSubmenus.forEach(function(otherSubmenu) {
+                    if (otherSubmenu !== submenu) {
+                        otherSubmenu.style.display = 'none';
+                    }
+                });
+
+                if (submenu.style.display === 'none') {
+                    submenu.style.display = 'block';
+                } else {
+                    submenu.style.display = 'none';
+                }
+            });
+        });
+        
+        // Göm submenyn när sidan klickas på
+        document.addEventListener('click', function() {
+            var submenus = document.querySelectorAll('.submenu');
+            submenus.forEach(function(submenu) {
+                submenu.style.display = 'none';
+            });
+        });
+        
+        var submenus = document.querySelectorAll('.submenu');
+        submenus.forEach(function(submenu) {
+            submenu.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+
     </script>
 </body>
 </html>
