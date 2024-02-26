@@ -47,9 +47,9 @@ body.yellow {
 
 body.yellow .toolbar,
 body.yellow .input {
-   background-color: yellow;
+   background-color: #295754;
    backdrop-filter: blur(10px); /* Blur effect */
-   background-color: rgba(255, 255, 0, 0.2); /* Semi-transparent yellow */
+   background-color: #418b87(255, 0, 0, 0.5); /* Semi-transparent yellow */
 }
 
 /* Den här delen har o göra med navbaren */
