@@ -108,6 +108,79 @@ color: #ddd;
    top: 55%;
    left: 75%;
    position: absolute;
+ }
+/* Global Styles */
+body {
+   background: linear-gradient(90deg, rgba(156, 25, 27, 1) 27%, rgba(236, 131, 133, 1) 89%);
+   color: #fff;
+   font-family: 'Arial', sans-serif;
+   margin: 0;
+}
+
+h1 {
+   text-align: center;
+   margin: 30px 0;
+}
+
+.categories {
+   display: flex;
+   justify-content: center;
+   margin-bottom: 20px;
+}
+
+.categories a {
+   color: #fff;
+   text-decoration: none;
+   margin: 0 15px;
+   font-weight: bold;
+}
+
+.categories a:hover {
+   text-decoration: underline;
+}
+
+.category {
+   text-align: center;
+   margin: 30px 0;
+}
+
+.category h2 {
+   background-color: #6e1113;
+   padding: 10px;
+   border-radius: 8px;
+   margin-bottom: 20px;
+}
+
+/* Styles for the Art Gallery page */
+#nature,
+#cities,
+#celebrities,
+#paintings {
+   margin: 0 auto;
+   max-width: 800px; /* Adjust the max-width based on your design preference */
+}
+
+#nature img,
+#cities img,
+#celebrities img,
+#paintings img {
+   max-width: 100%;
+   height: auto;
+   border-radius: 8px;
+   margin-bottom: 15px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Additional styles for responsiveness */
+@media only screen and (max-width: 600px) {
+   .categories {
+       flex-direction: column;
+       align-items: center;
+   }
+
+   .categories a {
+       margin: 10px 0;
+   }
 }
 
 .input input {
@@ -308,3 +381,32 @@ color: #ddd;
 .save-button:active + .submenu, .submenu:hover {
    display: block;
 }
+
+/* Additional styles for the Movies page */
+.content .row {
+   justify-content: space-around; /* Adjust the spacing between columns */
+}
+
+.column {
+   flex: 0 0 30%; /* Adjust the width of each column */
+   margin: 10px; /* Adjust the margin between columns */
+}
+
+.column img {
+   max-width: 100%; /* Set the width to 100% for responsiveness */
+   height: auto;
+   border-radius: 8px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.filters h2 {
+   color: #000; /* Change the color of the filters heading to black */
+}
+
+.filters .filter-list {
+   list-style-type: none;
+   padding: 0;
+   margin: 0;
+   margin-top: 10px; /* Adjust the top margin to reduce the gap */
+}
+
