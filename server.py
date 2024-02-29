@@ -16,6 +16,23 @@ mysql = MySQL(app)
 def get_logged_in_user_id():
     return session.get('user_id', None)
 
+def get_user_data():
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM Users")
+        user_data = cursor.fetchall()
+        return user_data
+
+def get_new_listid():
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM Lists")
+        list_data = cursor.fetchall()
+        new_listid = list_data[0][0] + 1 #get new listid
+        return new_listid
+
 def reserve_item_for_user(item_id, user_id):
     try:
         conn = mysql.connect()
@@ -54,32 +71,30 @@ def signup():
         password = request.form['signup-password']
         email = request.form['signup-email']
         color = request.form.get('color', 'beige')
-
+        print(username, password, email, color)
         # Check if password contains a capital letter
         if not any(char.isupper() for char in password):
             return 'Password must contain at least one capital letter.'
 
-        #göra en function som håller koll på userid's (kanske lägga den i en utestående funktion)
-        userid = 0
         # Store user data in MySQL database
-        try:
-            conn = mysql.connect()
-            cursor = conn.cursor()
+        # try:
+        #     conn = mysql.connect()
+        #     cursor = conn.cursor()
 
-            # Insert user into Users table
-            cursor.execute("INSERT INTO Users (UserID, Username, Password, Email, Profile_Picture) VALUES (%s, %s, %s, %s)",
-                           (userid, username, password, email, 'images/cat_placeholder.jpg'))
+        #     # Insert user into Users table
+        #     cursor.execute("INSERT INTO Users (UserID, Username, Password, Email, Profile_Picture) VALUES (%s, %s, %s, %s)",
+        #                    (userid, username, password, email, 'images/cat_placeholder.jpg'))
 
-            conn.commit()
-            cursor.close()
-            conn.close()
+        #     conn.commit()
+        #     cursor.close()
+        #     conn.close()
 
-            return 'Signup successful!'
-        except Exception as e:
-            return str(e)
-        finally:
-            cursor.close()
-            conn.close()
+        #     return 'Signup successful!'
+        # except Exception as e:
+        #     return str(e)
+        # finally:
+        #     cursor.close()
+        #     conn.close()
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -115,39 +130,64 @@ def logout():
 @app.route('/profile')
 def profile():
     user_id = get_logged_in_user_id()
+    user_data = get_user_data()
+    description = user_data[0][-1]
+    user_name = user_data[0][1]
 
-    if user_id:
-        try:
-            conn = mysql.connect()
-            cursor = conn.cursor()
+    # conn = mysql.connect()
+    # cursor = conn.cursor()
 
-            # Fetch user data
-            cursor.execute("SELECT * FROM Users WHERE UserID = %s", (user_id,))
-            user_data = cursor.fetchone()
-            print(user_data)
-            # Fetch playlists created by the user
-            cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id,))
-            user_playlists = cursor.fetchall()
+    # cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id,))
+    # user_playlists = cursor.fetchall()
+    return render_template('profile.html', description=description, user_name=user_name)
 
-            # Fetch playlists followed by the user
-            cursor.execute("""
-                SELECT L.ListID, L.Title, L.Description
-                FROM Lists L
-                INNER JOIN UserLists UL ON L.ListID = UL.ListID
-                WHERE UL.UserID = %s
-            """, (user_id,))
-            followed_playlists = cursor.fetchall()
+    # if user_id:
+    #     try:
+    #         conn = mysql.connect()
+    #         cursor = conn.cursor()
 
-            return render_template('profile.html', user_data=user_data, user_playlists=user_playlists,
-                                   followed_playlists=followed_playlists)
-        except Exception as e:
-            return str(e)
-        finally:
-            cursor.close()
-            conn.close()
-    else:
-        return redirect(url_for('index'))
+    #         # Fetch user data
+    #         cursor.execute("SELECT * FROM Users WHERE UserID = %s", (user_id,))
+    #         user_data = cursor.fetchone()
+    #         # Fetch playlists created by the user
+    #         cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id,))
+    #         user_playlists = cursor.fetchall()
 
+    #         # Fetch playlists followed by the user
+    #         cursor.execute("""
+    #             SELECT L.ListID, L.Title, L.Description
+    #             FROM Lists L
+    #             INNER JOIN UserLists UL ON L.ListID = UL.ListID
+    #             WHERE UL.UserID = %s
+    #         """, (user_id,))
+    #         followed_playlists = cursor.fetchall()
+
+    #         return render_template('profile.html', user_data=user_data, user_playlists=user_playlists,
+    #                                followed_playlists=followed_playlists)
+    #     except Exception as e:
+    #         return str(e)
+    #     finally:
+    #         cursor.close()
+    #         conn.close()
+    # else:
+    #     return render_template('profile.html')
+
+# @app.route('/create_board')
+# def board():
+#     # take userid
+#     # create new board : insert userid, create listid, get title, descrption
+#     new_listid = get_new_listid()
+#     conn = mysql.connect()
+#     cursor = conn.cursor()
+
+#     # cursor.execute("INSERT INTO Users (UserID, Username, Password, Email, Profile_Picture) VALUES (%s, %s, %s, %s)",
+#     #                    (userid, username, password, email, 'images/cat_placeholder.jpg'))
+
+
+#     # Insert user into Users table
+#     cursor.execute("INSERT INTO Lists (ListID, UserID, Title, Description, CreationDate) VALUES (%s, %s, %s, %s, %s)",
+#                    (new_listid, 'userid', 'title', 'description', 'creationdate'))
+    
 
 @app.route('/home')
 def home():
@@ -174,26 +214,26 @@ def home():
 
 @app.route('/movies')
 def movies():
-    user_id = get_logged_in_user_id()
+    #user_id = get_logged_in_user_id()
+    return render_template('movies.html')
+    # if user_id:
+    #     try:
+    #         conn = mysql.connect()
+    #         cursor = conn.cursor()
 
-    if user_id:
-        try:
-            conn = mysql.connect()
-            cursor = conn.cursor()
+    #         # Fetch some sample data for illustration purposes
+    #         cursor.execute("SELECT * FROM Items WHERE Category = 'Movies' LIMIT 8")
+    #         movies_data = cursor.fetchall()
 
-            # Fetch some sample data for illustration purposes
-            cursor.execute("SELECT * FROM Items WHERE Category = 'Movies' LIMIT 8")
-            movies_data = cursor.fetchall()
+    #         return render_template('movies.html', items_data=movies_data)
 
-            return render_template('movies.html', items_data=movies_data)
-
-        except Exception as e:
-            return str(e)
-        finally:
-            cursor.close()
-            conn.close()
-    else:
-        return redirect(url_for('index'))
+    #     except Exception as e:
+    #         return str(e)
+    #     finally:
+    #         cursor.close()
+    #         conn.close()
+    # else:
+    #     return redirect(url_for('index'))
 
 @app.route('/buy_movie/<int:item_id>')
 def buy_movie(item_id):

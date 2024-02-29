@@ -77,11 +77,11 @@
             <img src="images/creative_studio_placeholder_logo.png" alt="Creative Studio Logo">
         </div>
         <div class="links">
-            <a href="home_user.html">Home</a>
-            <a href="movies.html">Movies</a>
-            <a href="art.html">Art</a>
-            <a href="music.html">Music</a>
-            <a href="about.html">About</a>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('movies') }}">Movies</a>
+            <!-- <a href="{{ url_for('art') }}">Art</a> -->
+            <!-- <a href="{{ url_for('music') }}">Music</a> -->
+            <a href="{{ url_for('profile') }}">Profile</a>
         </div>
         <div class="profile">
             <img id="toolbar-profile-picture" src="images/cat_placeholder.jpg" alt="Profile Picture">
@@ -92,12 +92,12 @@
     <div class="card">
         <img id="profile_pic" src="https://static.printler.com/cache/b/9/0/9/b/f/b909bf7c6afd4b6a15988c7268da86f0939a6a60.jpg", width="300" height="300">
         
-        <h3>Mr fresh</h3>
+        <h3>{{user_name}}</h3>
+        {% if description != None %}
         <div class="description">
-            <p>
-                {{user_data[""]}}
-            </p>
+            <p>{{ description }}</p>
         </div>
+        {% endif %}
     </div>
 </body>
 </html>
