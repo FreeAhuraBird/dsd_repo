@@ -6,10 +6,10 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 # Configure MySQL
-app.config['MYSQL_DATABASE_USER'] = 'your_username'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'your_password'
-app.config['MYSQL_DATABASE_DB'] = 'your_database'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_USER'] = 'art@%'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'superbra'
+app.config['MYSQL_DATABASE_DB'] = 'art_database'
+app.config['MYSQL_DATABASE_HOST'] = '188.148.152.167'
 
 mysql = MySQL(app)
 
@@ -59,14 +59,16 @@ def signup():
         if not any(char.isupper() for char in password):
             return 'Password must contain at least one capital letter.'
 
+        #göra en function som håller koll på userid's (kanske lägga den i en utestående funktion)
+        userid = 0
         # Store user data in MySQL database
         try:
             conn = mysql.connect()
             cursor = conn.cursor()
 
             # Insert user into Users table
-            cursor.execute("INSERT INTO Users (Username, Password, Email, Profile_Picture) VALUES (%s, %s, %s, %s)",
-                           (username, password, email, 'images/cat_placeholder.jpg'))
+            cursor.execute("INSERT INTO Users (UserID, Username, Password, Email, Profile_Picture) VALUES (%s, %s, %s, %s)",
+                           (userid, username, password, email, 'images/cat_placeholder.jpg'))
 
             conn.commit()
             cursor.close()
@@ -119,14 +121,25 @@ def profile():
             conn = mysql.connect()
             cursor = conn.cursor()
 
+            # Fetch user data
             cursor.execute("SELECT * FROM Users WHERE UserID = %s", (user_id,))
             user_data = cursor.fetchone()
+            print(user_data)
+            # Fetch playlists created by the user
+            cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id,))
+            user_playlists = cursor.fetchall()
 
-            if user_data:
-                return render_template('profile.html', user_data=user_data)
-            else:
-                return 'User not found.'
+            # Fetch playlists followed by the user
+            cursor.execute("""
+                SELECT L.ListID, L.Title, L.Description
+                FROM Lists L
+                INNER JOIN UserLists UL ON L.ListID = UL.ListID
+                WHERE UL.UserID = %s
+            """, (user_id,))
+            followed_playlists = cursor.fetchall()
 
+            return render_template('profile.html', user_data=user_data, user_playlists=user_playlists,
+                                   followed_playlists=followed_playlists)
         except Exception as e:
             return str(e)
         finally:
@@ -134,6 +147,7 @@ def profile():
             conn.close()
     else:
         return redirect(url_for('index'))
+
 
 @app.route('/home')
 def home():
