@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
 </head>
 <body>
     <!--Logo måste läggas till på vänster sidan samt en javascript carousel.-->
@@ -10,7 +10,7 @@
 
         <!-- Här är en placeholder logo-->
         <div class="logo">
-            <img src="images/creative_studio_placeholder_logo.png" alt="Creative Studio Logo">
+            <img src="/static/img//creative_studio_placeholder_logo.png" alt="Creative Studio Logo">
         </div>
         <div class="links">
             <a href="{{ url_for('home') }}">Home</a>
@@ -20,20 +20,20 @@
             <a href="{{ url_for('profile') }}">Profile</a>
         </div>
         <div class="profile">
-            <img id="toolbar-profile-picture" src="images/cat_placeholder.jpg" alt="Profile Picture">
+            <img id="toolbar-profile-picture" src="/static/img//cat_placeholder.jpg" alt="Profile Picture">
         </div>
     </div>
-
-    <form class="input" id="signup-form">
+    {% block content %}
+    <form class="input" id="signup-form" action="/signup" method="post">
         <label for="profile-picture">Profile Picture:</label>
         <div id="profile-picture" class="profile-picture">
-            <img id="profile-picture-preview" src="images/cat_placeholder.jpg" alt="Profile Picture">
+            <img id="profile-picture-preview" src="/static/img//cat_placeholder.jpg" alt="Profile Picture">
         </div>
         <input type="file" id="profile-picture-input" name="profile-picture" style="display: none;">
-        <input type="text" id="signup-username" placeholder="Username" required minlength="4" maxlength="20">
-        <input type="text" id="signup-password" placeholder="Password" required minlength="8">
+        <input type="text" id="signup-username" name="signup-username" placeholder="Username" required minlength="4" maxlength="20">
+        <input type="text" id="signup-password" name="signup-password" placeholder="Password" required minlength="8">
         <span id="password-error" style="color: red;"></span>
-        <input type="text" id="signup-email" placeholder="Email" required>
+        <input type="text" id="signup-email" name="signup-email" placeholder="Email" required>
 
         <!-- color palettes -->
         <div class="color-options">
@@ -60,6 +60,7 @@
         
         <button class="button" type="submit" name="sign-up">Sign Up</button>
     </form>
+    {% endblock %}
 
     <!-- Javascript -->
     <script>

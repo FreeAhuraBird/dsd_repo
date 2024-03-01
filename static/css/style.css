@@ -1,7 +1,7 @@
 
 /* Här ändras både backgrundsbild och andra färger på webbsidan beroende på vilket palette som användaren väljer. */
 body.blue {
-   background-image: url('images/blue-background.jpg');
+   background-image: url('/static/img//blue-background.jpg');
    background-size: cover;
    background-repeat: no-repeat;
 }
@@ -14,7 +14,7 @@ body.blue .input {
 }
 
 body.beige {
-   background-image: url('images/beige-background.jpg');
+   background-image: url('/static/img//beige-background.jpg');
    background-size: cover;
    background-repeat: no-repeat;
 }
@@ -27,7 +27,7 @@ body.beige .input {
 }
 
 body.red {
-   background-image: url('images/red-background.jpg');
+   background-image: url('/static/img/red-background.jpg');
    background-size: cover;
    background-repeat: no-repeat;
 }
@@ -40,7 +40,7 @@ body.red .input {
 }
 
 body.yellow {
-   background-image: url('images/yellow-background.jpg');
+   background-image: url('/static/img//yellow-background.jpg');
    background-size: cover;
    background-repeat: no-repeat;
 }

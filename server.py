@@ -62,6 +62,17 @@ def reserve_item_for_user(item_id, user_id):
 # Define routes
 @app.route('/')
 def index():
+    print("HEEEEJ")
+    if request.method == 'POST':
+        username = request.form['signup-username']
+        password = request.form['signup-password']
+        email = request.form['signup-email']
+        color = request.form.get('color', 'beige')
+        print(username, password, email, color)
+        print("!!!!!!")
+        # Check if password contains a capital letter
+    # if not any(char.isupper() for char in password):
+    #     return 'Password must contain at least one capital letter.'
     return render_template('index.html')
 
 @app.route('/signup', methods=['POST'])
@@ -73,8 +84,9 @@ def signup():
         color = request.form.get('color', 'beige')
         print(username, password, email, color)
         # Check if password contains a capital letter
-        if not any(char.isupper() for char in password):
-            return 'Password must contain at least one capital letter.'
+        # if not any(char.isupper() for char in password):
+        #     return 'Password must contain at least one capital letter.'
+        return redirect(url_for("home"))
 
         # Store user data in MySQL database
         # try:
@@ -192,6 +204,7 @@ def profile():
 @app.route('/home')
 def home():
     user_id = get_logged_in_user_id()
+    return render_template('home_user.html')
 
     if user_id:
         try:
