@@ -64,6 +64,8 @@ body.yellow .input {
    font-family: Arial, sans-serif;
    backdrop-filter: blur(10px);
    border: 2px solid white;
+
+   
 }
 
 .spacer {
@@ -111,10 +113,13 @@ color: #ddd;
  }
 /* Global Styles */
 body {
-   background: linear-gradient(90deg, rgba(156, 25, 27, 1) 27%, rgba(236, 131, 133, 1) 89%);
+   /* background: linear-gradient(90deg, rgba(156, 25, 27, 1) 27%, rgba(236, 131, 133, 1) 89%);
    color: #fff;
    font-family: 'Arial', sans-serif;
-   margin: 0;
+   margin: 0; */
+   background-image: url('/static/img//beige-background.jpg');
+   background-size: cover;
+   background-repeat: no-repeat;
 }
 
 h1 {

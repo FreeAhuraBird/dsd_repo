@@ -62,7 +62,6 @@ def reserve_item_for_user(item_id, user_id):
 # Define routes
 @app.route('/')
 def index():
-    print("HEEEEJ")
     if request.method == 'POST':
         username = request.form['signup-username']
         password = request.form['signup-password']
@@ -83,23 +82,34 @@ def signup():
         email = request.form['signup-email']
         color = request.form.get('color', 'beige')
         print(username, password, email, color)
+        print("something")
+
+        userid = get_new_listid()
+        # Store user data in MySQL database
+        try:
+            conn = mysql.connect()
+            cursor = conn.cursor()
+
+            # Insert user into Users table
+            cursor.execute("INSERT INTO Users (UserID, Username, Password, Email, Profile_Picture) VALUES (%s, %s, %s, %s)",
+                           (userid, username, password, email, 'images/cat_placeholder.jpg'))
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return redirect(url_for("home"))
+        
+        except Exception as e:
+            return str(e)
+
+        #     return 'Signup successful!'
         # Check if password contains a capital letter
         # if not any(char.isupper() for char in password):
         #     return 'Password must contain at least one capital letter.'
-        return redirect(url_for("home"))
 
         # Store user data in MySQL database
-        # try:
-        #     conn = mysql.connect()
-        #     cursor = conn.cursor()
 
-        #     # Insert user into Users table
-        #     cursor.execute("INSERT INTO Users (UserID, Username, Password, Email, Profile_Picture) VALUES (%s, %s, %s, %s)",
-        #                    (userid, username, password, email, 'images/cat_placeholder.jpg'))
-
-        #     conn.commit()
-        #     cursor.close()
-        #     conn.close()
 
         #     return 'Signup successful!'
         # except Exception as e:
@@ -108,31 +118,33 @@ def signup():
         #     cursor.close()
         #     conn.close()
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['login-username']
+        email = request.form['login-email']
         password = request.form['login-password']
-
+        print(email, password)
         try:
             conn = mysql.connect()
             cursor = conn.cursor()
 
             # Check if the provided credentials are valid
-            cursor.execute("SELECT * FROM Users WHERE Username = %s AND Password = %s", (username, password))
+            cursor.execute("SELECT * FROM Users WHERE Username = %s AND Password = %s", (email, password))
             user_data = cursor.fetchone()
 
-            if user_data:
-                session['user_id'] = user_data[0]
-                return redirect(url_for('profile'))
+            if user_data != None:
+                return redirect(url_for('home'))
             else:
-                return 'Invalid credentials. Please try again.'
+                return render_template('login.html', invalid_password=True)
 
         except Exception as e:
             return str(e)
         finally:
             cursor.close()
             conn.close()
+
+    else:  # For GET requests
+        return render_template('login.html')
 
 @app.route('/logout')
 def logout():
