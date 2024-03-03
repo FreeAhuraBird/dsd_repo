@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+#from Flask_session import Session
 from flaskext.mysql import MySQL
 from datetime import datetime, timedelta
 
@@ -13,25 +14,44 @@ app.config['MYSQL_DATABASE_HOST'] = '188.148.152.167'
 
 mysql = MySQL(app)
 
+def get_userID_from_email(email):
+    conn = mysql.connect()
+    cursor = conn.cursor()
+
+    query = "SELECT UserID FROM Users WHERE Email = %s"
+    cursor.execute(query, (email,))
+    return cursor.fetchall()
+
 def get_logged_in_user_id():
     return session.get('user_id', None)
 
-def get_user_data():
-        conn = mysql.connect()
-        cursor = conn.cursor()
+def get_user_data(email):
+    conn = mysql.connect()
+    cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM Users")
-        user_data = cursor.fetchall()
-        return user_data
+    query = "SELECT * FROM Users WHERE email = %s"
+    cursor.execute(query, (email,))
+    user_data = cursor.fetchall()
+    return user_data
 
 def get_new_listid():
-        conn = mysql.connect()
-        cursor = conn.cursor()
+    conn = mysql.connect()
+    cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM Lists")
-        list_data = cursor.fetchall()
-        new_listid = list_data[0][0] + 1 #get new listid
-        return new_listid
+    cursor.execute("SELECT UserID FROM Users")
+    list_data = cursor.fetchall()
+    print("____________")
+    print(list_data)
+    new_listid = list_data[0][0] + 1 #get new listid
+    print(list_data[0][0])
+    return new_listid
+
+def get_column_data(column_name, table):
+    conn = mysql.connect()
+    cursor = conn.cursor()
+
+    cursor.execute(f"SELECT {column_name} FROM {table}")
+    return cursor.fetchall()
 
 def reserve_item_for_user(item_id, user_id):
     try:
@@ -62,16 +82,16 @@ def reserve_item_for_user(item_id, user_id):
 # Define routes
 @app.route('/')
 def index():
+    if 'email' in session:
+        return redirect(url_for("home"))
+    
     if request.method == 'POST':
         username = request.form['signup-username']
         password = request.form['signup-password']
         email = request.form['signup-email']
         color = request.form.get('color', 'beige')
         print(username, password, email, color)
-        print("!!!!!!")
-        # Check if password contains a capital letter
-    # if not any(char.isupper() for char in password):
-    #     return 'Password must contain at least one capital letter.'
+
     return render_template('index.html')
 
 @app.route('/signup', methods=['POST'])
@@ -83,40 +103,35 @@ def signup():
         color = request.form.get('color', 'beige')
         print(username, password, email, color)
         print("something")
+        all_emails = get_column_data("Email", "Users")
+        print(all_emails)
+        for emails in all_emails:
+            for email_ in emails:
+                print(email_)
+                if email_ == email:
+                    print(f"{email_} exists")
+                    return render_template('index.html', existing_email=True)
+        
 
         userid = get_new_listid()
+        print(userid)
         # Store user data in MySQL database
         try:
             conn = mysql.connect()
             cursor = conn.cursor()
 
             # Insert user into Users table
-            cursor.execute("INSERT INTO Users (UserID, Username, Password, Email, Profile_Picture) VALUES (%s, %s, %s, %s)",
+            cursor.execute("INSERT INTO Users (UserID, Username, Password, Email, Profile_Picture) VALUES (%s, %s, %s, %s, %s)",
                            (userid, username, password, email, 'images/cat_placeholder.jpg'))
 
             conn.commit()
             cursor.close()
             conn.close()
 
-            return redirect(url_for("home"))
+            return redirect(url_for("login"))
         
         except Exception as e:
             return str(e)
-
-        #     return 'Signup successful!'
-        # Check if password contains a capital letter
-        # if not any(char.isupper() for char in password):
-        #     return 'Password must contain at least one capital letter.'
-
-        # Store user data in MySQL database
-
-
-        #     return 'Signup successful!'
-        # except Exception as e:
-        #     return str(e)
-        # finally:
-        #     cursor.close()
-        #     conn.close()
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -129,10 +144,11 @@ def login():
             cursor = conn.cursor()
 
             # Check if the provided credentials are valid
-            cursor.execute("SELECT * FROM Users WHERE Username = %s AND Password = %s", (email, password))
+            cursor.execute("SELECT * FROM Users WHERE Email = %s AND Password = %s", (email, password))
             user_data = cursor.fetchone()
-
+            print(user_data)
             if user_data != None:
+                session['email'] = email
                 return redirect(url_for('home'))
             else:
                 return render_template('login.html', invalid_password=True)
@@ -153,17 +169,15 @@ def logout():
 
 @app.route('/profile')
 def profile():
-    user_id = get_logged_in_user_id()
-    user_data = get_user_data()
-    description = user_data[0][-1]
-    user_name = user_data[0][1]
+    if 'email' in session:
+        user_email = session.get('email')
+        user_id = get_userID_from_email(user_email)
+        user_data = get_user_data(user_email)
+        description = user_data[0][-1]
+        user_name = user_data[0][1]
+        profile_pic = user_data[0][5]
 
-    # conn = mysql.connect()
-    # cursor = conn.cursor()
-
-    # cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id,))
-    # user_playlists = cursor.fetchall()
-    return render_template('profile.html', description=description, user_name=user_name)
+    return render_template('profile.html', description=description, user_name=user_name, profile_pic=profile_pic)
 
     # if user_id:
     #     try:
@@ -239,8 +253,13 @@ def home():
 
 @app.route('/movies')
 def movies():
+    if 'email' in session:
+        user_email = session.get('email')
+        user_data = get_user_data(user_email)
+        profile_pic = user_data[0][5]
+        print(profile_pic)
     #user_id = get_logged_in_user_id()
-    return render_template('movies.html')
+    return render_template('movies.html', profile_pic=profile_pic)
     # if user_id:
     #     try:
     #         conn = mysql.connect()
@@ -260,40 +279,35 @@ def movies():
     # else:
     #     return redirect(url_for('index'))
 
-@app.route('/buy_movie/<int:item_id>')
-def buy_movie(item_id):
-    user_id = get_logged_in_user_id()
-
-    if user_id:
-        if reserve_item_for_user(item_id, user_id):
-            return f'Movie with ItemID {item_id} reserved for purchase. Please complete the transaction within 10 minutes.'
-        else:
-            return f'Movie with ItemID {item_id} is not available for purchase.'
-    else:
-        return redirect(url_for('index'))
-
 @app.route('/art')
 def art():
-    user_id = get_logged_in_user_id()
+    if 'email' in session:
+        user_email = session.get('email')
+        user_data = get_user_data(user_email)
+        profile_pic = user_data[0][5]
+        print(profile_pic)
+    #user_id = get_logged_in_user_id()
+    return render_template('art.html', profile_pic=profile_pic)
+    # user_id = get_logged_in_user_id()
 
-    if user_id:
-        try:
-            conn = mysql.connect()
-            cursor = conn.cursor()
+    # if user_id:
+    #     try:
+    #         conn = mysql.connect()
+    #         cursor = conn.cursor()
 
-            # Fetch some sample data for illustration purposes
-            cursor.execute("SELECT * FROM Items WHERE Category = 'Art' LIMIT 8")
-            art_data = cursor.fetchall()
+    #         # Fetch some sample data for illustration purposes
+    #         cursor.execute("SELECT * FROM Items WHERE Category = 'Art' LIMIT 8")
+    #         art_data = cursor.fetchall()
 
-            return render_template('art.html', items_data=art_data)
+    #         return render_template('art.html', items_data=art_data)
 
-        except Exception as e:
-            return str(e)
-        finally:
-            cursor.close()
-            conn.close()
-    else:
-        return redirect(url_for('index'))
+    #     except Exception as e:
+    #         return str(e)
+    #     finally:
+    #         cursor.close()
+    #         conn.close()
+    # else:
+    #     return redirect(url_for('index'))
 
 @app.route('/buy_art/<int:item_id>')
 def buy_art(item_id):
@@ -309,38 +323,34 @@ def buy_art(item_id):
 
 @app.route('/music')
 def music():
-    user_id = get_logged_in_user_id()
+    if 'email' in session:
+        user_email = session.get('email')
+        user_data = get_user_data(user_email)
+        profile_pic = user_data[0][5]
+        print(profile_pic)
+    #user_id = get_logged_in_user_id()
+    return render_template('music.html', profile_pic=profile_pic)
+    # user_id = get_logged_in_user_id()
 
-    if user_id:
-        try:
-            conn = mysql.connect()
-            cursor = conn.cursor()
+    # if user_id:
+    #     try:
+    #         conn = mysql.connect()
+    #         cursor = conn.cursor()
 
-            # Fetch some sample data for illustration purposes
-            cursor.execute("SELECT * FROM Items WHERE Category = 'Music' LIMIT 8")
-            music_data = cursor.fetchall()
+    #         # Fetch some sample data for illustration purposes
+    #         cursor.execute("SELECT * FROM Items WHERE Category = 'Music' LIMIT 8")
+    #         music_data = cursor.fetchall()
 
-            return render_template('music.html', items_data=music_data)
+    #         return render_template('music.html', items_data=music_data)
 
-        except Exception as e:
-            return str(e)
-        finally:
-            cursor.close()
-            conn.close()
-    else:
-        return redirect(url_for('index'))
+    #     except Exception as e:
+    #         return str(e)
+    #     finally:
+    #         cursor.close()
+    #         conn.close()
+    # else:
+    #     return redirect(url_for('index'))
 
-@app.route('/buy_music/<int:item_id>')
-def buy_music(item_id):
-    user_id = get_logged_in_user_id()
-
-    if user_id:
-        if reserve_item_for_user(item_id, user_id):
-            return f'Music with ItemID {item_id} reserved for purchase. Please complete the transaction within 10 minutes.'
-        else:
-            return f'Music with ItemID {item_id} is not available for purchase.'
-    else:
-        return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
