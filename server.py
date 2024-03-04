@@ -136,6 +136,14 @@ def signup():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
+    if 'email' in session:
+        user_email = session.get('email')
+        user_data = get_user_data(user_email)
+        profile_pic = user_data[0][5]
+        print(profile_pic)
+        #user_id = get_logged_in_user_id()
+        return redirect(url_for("profile"))
+    
     if request.method == 'POST':
         email = request.form['login-email']
         password = request.form['login-password']
@@ -259,8 +267,13 @@ def profile():
 
 @app.route('/home')
 def home():
-    user_id = get_logged_in_user_id()
-    return render_template('home_user.html')
+    if 'email' in session:
+        user_email = session.get('email')
+        user_data = get_user_data(user_email)
+        profile_pic = user_data[0][5]
+        print(profile_pic)
+    #user_id = get_logged_in_user_id()
+    return render_template('home.html', profile_pic=profile_pic)
 
     if user_id:
         try:
@@ -271,7 +284,7 @@ def home():
             cursor.execute("SELECT * FROM Items LIMIT 3")
             items_data = cursor.fetchall()
 
-            return render_template('home_user.html', items_data=items_data)
+            return render_template('home.html', items_data=items_data)
 
         except Exception as e:
             return str(e)
