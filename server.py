@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 #from Flask_session import Session
 from flaskext.mysql import MySQL
 from datetime import datetime, timedelta
+import os, uuid
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -147,6 +148,7 @@ def login():
             cursor.execute("SELECT * FROM Users WHERE Email = %s AND Password = %s", (email, password))
             user_data = cursor.fetchone()
             print(user_data)
+            print(user_data)
             if user_data != None:
                 session['email'] = email
                 return redirect(url_for('home'))
@@ -161,11 +163,37 @@ def login():
 
     else:  # For GET requests
         return render_template('login.html')
+    
+@app.route('/upload_profilepic', methods=['POST'])
+def upload_profilepic():
+    file = request.files['file']
+
+    if file:
+        if 'email' in session:
+            user_email = session.get('email')
+
+        filename = str(uuid.uuid4()) + os.path.splitext(file.filename)[1] #get new filename
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        sql = "UPDATE Users SET Profile_Picture = %s WHERE email = %s"
+        cursor.execute(sql, (filename, user_email))
+
+
+# Define the values to insert into the columns
+        values = (filename, "condition_value")
+        conn.commit()
+        cursor.close()
+        conn.close()
+        # this BELOW IS WRONG, DOESN'T WORK
+        file.save(os.path.join(app.config['/static/img/'], filename)) # upload new file
+        
+    return redirect(url_for('profile'))
 
 @app.route('/logout')
 def logout():
-    session.pop('user_id', None)
-    return redirect(url_for('index'))
+    session.pop('email', None)
+    return redirect(url_for('login'))
 
 @app.route('/profile')
 def profile():
@@ -177,8 +205,10 @@ def profile():
         user_name = user_data[0][1]
         profile_pic = user_data[0][5]
 
-    return render_template('profile.html', description=description, user_name=user_name, profile_pic=profile_pic)
+        return render_template('profile.html', description=description, user_name=user_name, profile_pic=profile_pic)
 
+    else:
+        return redirect(url_for("login"))
     # if user_id:
     #     try:
     #         conn = mysql.connect()
@@ -350,6 +380,16 @@ def music():
     #         conn.close()
     # else:
     #     return redirect(url_for('index'))
+
+@app.route('/people')
+def people():
+    if 'email' in session:
+        user_email = session.get('email')
+        user_data = get_user_data(user_email)
+        profile_pic = user_data[0][5]
+        print(profile_pic)
+    #user_id = get_logged_in_user_id()
+    return render_template('people.html', profile_pic=profile_pic)
 
 
 if __name__ == '__main__':
