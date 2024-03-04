@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+</head>
+<body>
+    <!--Logo måste läggas till på vänster sidan samt en javascript carousel.-->
+
+    <div class="toolbar">
+
+        <!-- Här är en placeholder logo-->
+        <div class="logo">
+            <img src="/static/img//creative_studio_placeholder_logo.png" alt="Creative Studio Logo">
+        </div>
+        <div class="links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('movies') }}">Movies</a>
+            <a href="{{ url_for('art') }}">Art</a>
+            <a href="{{ url_for('music') }}">Music</a>
+            <a href="{{ url_for('login') }}">Sign In</a>
+        </div>
+        <div class="profile">
+            <img id="toolbar-profile-picture" src="/static/img//cat_placeholder.jpg" alt="Profile Picture">
+        </div>
+    </div>
+    {% block content %}
+    <form class="input" id="login-form" action="login" method="post">
+        <label for="profile-picture">Profile Picture:</label>
+        <div id="profile-picture" class="profile-picture">
+            <img id="profile-picture-preview" src="/static/img//cat_placeholder.jpg" alt="Profile Picture">
+        </div>
+        <input type="text" id="login-email" name="login-email" placeholder="Email" required>
+        <input type="text" id="login-password" name="login-password" placeholder="Password" required minlength="8">
+        <span id="password-error" style="color: red;"></span>
+
+        <button class="button" type="submit" name="sign-up">Sign Up</button>
+        {% if invalid_password %}
+
+            <p>Invalid email or password. Please try again.</p>
+
+        {% endif %}
+        {% endblock %}
+    </form>
+</body>
+</html>

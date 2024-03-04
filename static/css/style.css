@@ -1,0 +1,417 @@
+
+/* Här ändras både backgrundsbild och andra färger på webbsidan beroende på vilket palette som användaren väljer. */
+body.blue {
+   background-image: url('/static/img//blue-background.jpg');
+   background-size: cover;
+   background-repeat: no-repeat;
+}
+
+body.blue .toolbar,
+body.blue .input {
+   background-color: blue;
+   backdrop-filter: blur(10px); /* Blur effect */
+   background-color: rgba(0, 0, 255, 0.2); /* Semi-transparent blue */
+}
+
+body.beige {
+   background-image: url('/static/img//beige-background.jpg');
+   background-size: cover;
+   background-repeat: no-repeat;
+}
+
+body.beige .toolbar,
+body.beige .input {
+   background-color: beige;
+   backdrop-filter: blur(10px); /* Blur effect */
+   background-color: rgba(245, 245, 220, 0.2); /* Semi-transparent beige */
+}
+
+body.red {
+   background-image: url('/static/img/red-background.jpg');
+   background-size: cover;
+   background-repeat: no-repeat;
+}
+
+body.red .toolbar,
+body.red .input {
+   background-color: red;
+   backdrop-filter: blur(10px); /* Blur effect */
+   background-color: rgba(255, 0, 0, 0.2); /* Semi-transparent red */
+}
+
+body.yellow {
+   background-image: url('/static/img//yellow-background.jpg');
+   background-size: cover;
+   background-repeat: no-repeat;
+}
+
+body.yellow .toolbar,
+body.yellow .input {
+   background-color: #295754;
+   backdrop-filter: blur(10px); /* Blur effect */
+   background-color: #418b87(255, 0, 0, 0.5); /* Semi-transparent yellow */
+}
+
+/* Den här delen har o göra med navbaren */
+.toolbar {
+   background-color: rgba(77, 0, 0, 0.6); /* Make the color more vibrant */
+   color: #fff;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 10px 20px;
+   border-radius: 10px;
+   font-family: Arial, sans-serif;
+   backdrop-filter: blur(10px);
+   border: 2px solid white;
+
+   
+}
+
+.spacer {
+   height: 50px;
+   width: 890px;
+}
+
+.logo img{
+   height: 50px;
+}
+ 
+.links a {
+   color: #fff;
+   text-decoration: none;
+   margin-left: 0 20px;
+   padding: 10px;
+   font-size: 18px;
+   transition: color 0.3s ease;
+}
+
+.links a:hover {
+color: #ddd;
+   text-decoration: none;
+}
+
+
+
+/* Den här delen har o göra med formuläret (sign up) */
+.input {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 20px;
+   width: 320px;
+   height: 500px; 
+   background-color: rgba(96, 69, 28, 0.5); /* Make the background color semi-transparent */
+   backdrop-filter: blur(200px); /* Apply a blur effect */
+   border-radius: 25px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   transform: translate(-50%, -50%);
+   top: 55%;
+   left: 75%;
+   position: absolute;
+ }
+/* Global Styles */
+body {
+   /* background: linear-gradient(90deg, rgba(156, 25, 27, 1) 27%, rgba(236, 131, 133, 1) 89%);
+   color: #fff;
+   font-family: 'Arial', sans-serif;
+   margin: 0; */
+   background-image: url('/static/img//beige-background.jpg');
+   background-size: cover;
+   background-repeat: no-repeat;
+}
+
+h1 {
+   text-align: center;
+   margin: 30px 0;
+}
+
+.categories {
+   display: flex;
+   justify-content: center;
+   margin-bottom: 20px;
+}
+
+.categories a {
+   color: #fff;
+   text-decoration: none;
+   margin: 0 15px;
+   font-weight: bold;
+}
+
+.categories a:hover {
+   text-decoration: underline;
+}
+
+.category {
+   text-align: center;
+   margin: 30px 0;
+}
+
+.category h2 {
+   background-color: #6e1113;
+   padding: 10px;
+   border-radius: 8px;
+   margin-bottom: 20px;
+}
+
+/* Styles for the Art Gallery page */
+#nature,
+#cities,
+#celebrities,
+#paintings {
+   margin: 0 auto;
+   max-width: 800px; /* Adjust the max-width based on your design preference */
+}
+
+#nature img,
+#cities img,
+#celebrities img,
+#paintings img {
+   max-width: 100%;
+   height: auto;
+   border-radius: 8px;
+   margin-bottom: 15px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Additional styles for responsiveness */
+@media only screen and (max-width: 600px) {
+   .categories {
+       flex-direction: column;
+       align-items: center;
+   }
+
+   .categories a {
+       margin: 10px 0;
+   }
+}
+
+.input input {
+   margin: 10px 0; /* Add vertical margin */
+   padding: 10px; /* Add padding */
+   border: none; /* Remove border */
+   border-radius: 5px; /* Round the corners */
+   background-color: rgba(255, 255, 255, 0.7); /* Make the background color semi-transparent */
+   width: 80%; /* Reduce the width */
+   outline: none; /* Remove outline */
+}
+
+.input button {
+   margin: 10px 0; /* Add vertical margin */
+   padding: 10px; /* Add padding */
+   border: none; /* Remove border */
+   border-radius: 5px; /* Round the corners */
+   background-color: #6e1113; /* Change the background color */
+   color: #fff; /* Change the text color */
+   width: 80%; /* Reduce the width */
+   cursor: pointer; /* Change the cursor when hovering over the button */
+   transition: background-color 0.3s ease; /* Add transition for smooth color change */
+}
+
+.input button:hover {
+   background-color: #9d191b; /* Change the background color on hover */
+}
+
+
+
+/* Den här delen har o göra med profilbilden */
+.profile-picture {
+   width: 80px;
+   height: 80px;
+   border-radius: 50%; /* Make the div circular */
+   overflow: hidden; /* Ensure the image fits in the circle */
+   cursor: pointer; /* Change the cursor when hovering over the div */
+}
+
+#profile-picture-preview {
+   width: 100%;
+   height: 100%;
+}
+
+
+
+
+/* Den här delen har o göra med färgpaletterna */
+.color-options {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   margin-bottom: 20px;
+}
+
+.color-options p {
+   margin-bottom: 10px;
+}
+
+.palette-container {
+   display: flex;
+   justify-content: space-between;
+   width: 100%;
+}
+
+.color-options label {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.color-palette {
+   width: 20px;
+   height: 20px;
+   border-radius: 50%;
+   margin-bottom: 5px;
+   opacity: 0.9;
+}
+
+/* Här ändrar vi färgerna för "choose a color palette" */
+.blue {
+   background: linear-gradient(25deg, rgba(13,0,255,1) 0%, rgba(0,212,255,1) 69%);
+}
+
+.beige {
+   background: linear-gradient(25deg, rgba(130,70,70,1) 0%, rgba(255,240,219,1) 69%);
+}
+
+.red {
+   background: linear-gradient(25deg, rgba(156,25,27,1) 0%, rgba(255,149,151,1) 70%);
+}
+
+.yellow {
+   background: linear-gradient(25deg, rgba(25,82,156,1) 0%, rgba(255,149,149,1) 70%);
+}
+
+.profile {
+   height: 50px;
+   width: 50px;
+   border-radius: 50%;
+   overflow: hidden;
+   margin-left: auto;
+}
+
+#toolbar-profile-picture {
+   width: 100%;
+   height: 100%;
+   transition: transform 0.3s ease-in-out;
+}
+
+#toolbar-profile-picture:hover {
+   transform: scale(1.1);
+}
+
+.image-container {
+   position: relative;
+}
+
+.save-button {
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   display: none;
+   background-color: #4B0082;
+   color: white;
+   border: none;
+   border-radius: 50px; /* Runda hörn */
+   padding: 10px 20px; /* Denna gör knappen större */
+   font-size: 16px;
+   transition: background 0.5s;
+   box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* 3D effekt med en shadow */
+   overflow: hidden;
+   cursor: pointer;
+}
+
+/* Den här delen har o göra med animationen av knappen */
+.save-button:before {
+   content: "";
+   position: absolute;
+   top: -50%;
+   left: -50%;
+   width: 200%;
+   height: 200%;
+   background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+   background-size: 200%;
+   transform: rotate(30deg);
+   pointer-events: none; 
+   animation: shine 7s infinite linear;
+}
+
+@keyframes shine {
+   from {background-position: -200% -200%;}
+   to {background-position: 200% 200%;}
+}
+
+.save-button:hover {
+   background-color: #800080; /* Ändrar färgen av save knappen när man hovrar över den */
+   transform: scale(1.08); /* Gör knappen 8% större när du hovrar över den */
+   transform-origin: top right;
+   transition: transform 0.2s ease-in-out; /* Ge en smooth animation när den blir större */
+}
+
+.image-container:hover .save-button {
+   display: block;
+}
+
+.card:hover .save-button {
+   display: block;
+}
+
+.submenu {
+   display: none;
+   position: absolute;
+   top: 50px; /* submenyn kommer att visas 50px under knappen */
+   right: 10px;
+   background-color: #ffffff;
+   color: #4B0082;
+   padding: 20px;
+   border-radius: 5px;
+   box-shadow: 0 10px 20px rgba(75, 0, 130, 0.2);
+   backdrop-filter: blur(10px);
+}
+
+.submenu a {
+   color: #4B0082;
+   text-decoration: none;
+   display: block;
+   margin-bottom: 15px;
+   padding: 10px;
+   border-radius: 5px;
+   transition: box-shadow 0.3s ease;
+}
+
+.submenu a:hover {
+   box-shadow: 0 0 10px 5px rgba(75, 0, 130, 0.5);
+}
+
+.save-button:active + .submenu, .submenu:hover {
+   display: block;
+}
+
+/* Additional styles for the Movies page */
+.content .row {
+   justify-content: space-around; /* Adjust the spacing between columns */
+}
+
+.column {
+   flex: 0 0 30%; /* Adjust the width of each column */
+   margin: 10px; /* Adjust the margin between columns */
+}
+
+.column img {
+   max-width: 100%; /* Set the width to 100% for responsiveness */
+   height: auto;
+   border-radius: 8px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.filters h2 {
+   color: #000; /* Change the color of the filters heading to black */
+}
+
+.filters .filter-list {
+   list-style-type: none;
+   padding: 0;
+   margin: 0;
+   margin-top: 10px; /* Adjust the top margin to reduce the gap */
+}
+

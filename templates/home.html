@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
+    <style>
+        /* Add your custom CSS styles here */
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white */
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-gap: 20px;
+        }
+        
+        .card {
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease-in-out; /* add smooth hover effect */
+        }
+        
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        
+        .card h3 {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        
+        .card p {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #888;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <!-- Här är en placeholder logo-->
+        <div class="logo">
+            <img src="images/creative_studio_placeholder_logo.png" alt="Creative Studio Logo">
+        </div>
+        <div class="links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('movies') }}">Movies</a>
+            <a href="{{ url_for('art') }}">Art</a>
+            <a href="{{ url_for('music') }}">Music</a>
+            <a href="{{ url_for('people') }}">Find People</a>
+            <a href="{{ url_for('profile') }}">Profile</a>
+        </div>
+        <div class="profile">
+            <a href="profile.html">
+                <img id="toolbar-profile-picture" src="images/cat_placeholder.jpg" alt="Profile Picture">
+            </a>
+        </div>
+        
+    </div>
+    <div class="container">
+        <div class="grid">
+            <!-- Add your card elements here -->
+            <div class="card">
+                <div class="image-container">
+                    <a href="images/image1.jpg" data-lightbox="image-1" data-title="Card 1">
+                        <img src="images/image1.jpg" alt="Image 1">
+                    </a>
+                    <button class="button save-button">Save</button>
+                    <div class="submenu">
+                        <a href="#">Make New Board</a>
+                        <a href="https://www.google.com">Google</a>
+                        <a href="https://www.stackoverflow.com">stackoverflow</a>
+                    </div>
+                </div>
+                <h3>Card 1</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <div class="card">
+                <div class="image-container">
+                    <a href="images/image2.jpg" data-lightbox="image-2" data-title="Card 2">
+                        <img src="images/image2.jpg" alt="Image 2">
+                    </a>
+                    <button class="button save-button">Save</button>
+                    <div class="submenu">
+                        <a href="#">Make New Board</a>
+                    </div>
+                </div>         <h3>Card 2</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <div class="card">
+                <div class="image-container">
+                    <a href="images/image3.jpg" data-lightbox="image-3" data-title="Card 3">
+                        <img src="images/image3.jpg" alt="Image 3">
+                    </a>
+                    <button class="button save-button">Save</button>
+                    <div class="submenu">
+                        <a href="#">Make New Board</a>
+                    </div>
+                </div>
+                <h3>Card 3</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <!-- Add more card elements as needed -->
+        </div>
+    </div>
+    <!-- <script>
+        // Check if user is logged in
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html'; // Redirect to login page if user is not logged in
+        }
+
+        // Apply color palette preference
+        var color = localStorage.getItem('color');
+        if (color) {
+            document.body.className = color;
+        }
+
+        // Check if there is a profile picture stored in localStorage
+        var profilePicture = localStorage.getItem('profilePicture');
+        if (profilePicture) {
+            document.getElementById('toolbar-profile-picture').src = profilePicture;
+        }
+
+        var saveButtons = document.querySelectorAll('.save-button');
+
+        saveButtons.forEach(function(button) {
+            var submenu = button.nextElementSibling;
+            submenu.style.display = 'none';
+
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
+
+                var otherSubmenus = document.querySelectorAll('.submenu');
+                otherSubmenus.forEach(function(otherSubmenu) {
+                    if (otherSubmenu !== submenu) {
+                        otherSubmenu.style.display = 'none';
+                    }
+                });
+
+                if (submenu.style.display === 'none') {
+                    submenu.style.display = 'block';
+                } else {
+                    submenu.style.display = 'none';
+                }
+            });
+        });
+        
+        // Göm submenyn när sidan klickas på
+        document.addEventListener('click', function() {
+            var submenus = document.querySelectorAll('.submenu');
+            submenus.forEach(function(submenu) {
+                submenu.style.display = 'none';
+            });
+        });
+        
+        var submenus = document.querySelectorAll('.submenu');
+        submenus.forEach(function(submenu) {
+            submenu.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+
+    </script> -->
+       
+</body>
+</html>
