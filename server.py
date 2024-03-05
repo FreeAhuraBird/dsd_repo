@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 #from Flask_session import Session
 from flaskext.mysql import MySQL
 from datetime import datetime, timedelta
-import os, uuid
+import os, uuid, pprint, random
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -292,6 +292,8 @@ def home():
         cursor.execute("SELECT * FROM Items")
         items_data = [dict((cursor.description[i][0], value) 
                       for i, value in enumerate(row)) for row in cursor.fetchall()]
+        pprint.pprint(items_data)
+        random.shuffle(items_data)
 
     except Exception as e:
         return str(e)
@@ -337,6 +339,7 @@ def art():
         profile_pic = user_data[0][5]
         print(profile_pic)
     #user_id = get_logged_in_user_id()
+
     return render_template('art.html', profile_pic=profile_pic)
     # user_id = get_logged_in_user_id()
 
