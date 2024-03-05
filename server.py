@@ -267,32 +267,30 @@ def profile():
 
 @app.route('/home')
 def home():
-    if 'email' in session:
-        user_email = session.get('email')
-        user_data = get_user_data(user_email)
-        profile_pic = user_data[0][5]
-        print(profile_pic)
-    #user_id = get_logged_in_user_id()
-    return render_template('home.html', profile_pic=profile_pic)
-
-    if user_id:
-        try:
-            conn = mysql.connect()
-            cursor = conn.cursor()
-
-            # Fetch some sample data for illustration purposes
-            cursor.execute("SELECT * FROM Items LIMIT 3")
-            items_data = cursor.fetchall()
-
-            return render_template('home.html', items_data=items_data)
-
-        except Exception as e:
-            return str(e)
-        finally:
-            cursor.close()
-            conn.close()
-    else:
+    if 'email' not in session:
         return redirect(url_for('index'))
+
+    user_email = session.get('email')
+    user_data = get_user_data(user_email)
+    profile_pic = user_data[0][5]
+    print(profile_pic)
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        # Fetch some sample data for illustration purposes
+        cursor.execute("SELECT * FROM Items")
+        items_data = [dict((cursor.description[i][0], value) 
+                      for i, value in enumerate(row)) for row in cursor.fetchall()]
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('home.html', profile_pic=profile_pic, items_data=items_data)
 
 @app.route('/movies')
 def movies():

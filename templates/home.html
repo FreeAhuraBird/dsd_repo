@@ -58,7 +58,7 @@
     <div class="toolbar">
         <!-- Här är en placeholder logo-->
         <div class="logo">
-            <img src="images/creative_studio_placeholder_logo.png" alt="Creative Studio Logo">
+            <img src="{{ url_for('static', filename='img/creative_studio_placeholder_logo.png') }}" alt="Creative Studio Logo">
         </div>
         <div class="links">
             <a href="{{ url_for('home') }}">Home</a>
@@ -73,54 +73,29 @@
                 <img id="toolbar-profile-picture" src="images/cat_placeholder.jpg" alt="Profile Picture">
             </a>
         </div>
-        
     </div>
+
     <div class="container">
         <div class="grid">
-            <!-- Add your card elements here -->
+            <!-- Loop over items_data to generate card elements -->
+            {% for item in items_data %}
             <div class="card">
                 <div class="image-container">
-                    <a href="images/image1.jpg" data-lightbox="image-1" data-title="Card 1">
-                        <img src="images/image1.jpg" alt="Image 1">
-                    </a>
-                    <button class="button save-button">Save</button>
-                    <div class="submenu">
-                        <a href="#">Make New Board</a>
-                        <a href="https://www.google.com">Google</a>
-                        <a href="https://www.stackoverflow.com">stackoverflow</a>
-                    </div>
-                </div>
-                <h3>Card 1</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-            <div class="card">
-                <div class="image-container">
-                    <a href="images/image2.jpg" data-lightbox="image-2" data-title="Card 2">
-                        <img src="images/image2.jpg" alt="Image 2">
-                    </a>
-                    <button class="button save-button">Save</button>
-                    <div class="submenu">
-                        <a href="#">Make New Board</a>
-                    </div>
-                </div>         <h3>Card 2</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-            <div class="card">
-                <div class="image-container">
-                    <a href="images/image3.jpg" data-lightbox="image-3" data-title="Card 3">
-                        <img src="images/image3.jpg" alt="Image 3">
+                    <a href="{{ item.LinkID }}" data-lightbox="image-1" data-title="{{ item.Title }}">
+                        <img src="{{ url_for('static', filename='img/' + item.ThumbnailImage) }}" alt="{{ item.Title }}">
                     </a>
                     <button class="button save-button">Save</button>
                     <div class="submenu">
                         <a href="#">Make New Board</a>
                     </div>
                 </div>
-                <h3>Card 3</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <h3>{{ item.Title }}</h3>
+                <p>{{ item.Description }}</p>
             </div>
-            <!-- Add more card elements as needed -->
+            {% endfor %}
         </div>
     </div>
+
     <script>
         var saveButtons = document.querySelectorAll('.save-button');
     
