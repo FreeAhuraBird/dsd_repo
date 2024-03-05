@@ -25,10 +25,7 @@
     </div>
     {% block content %}
     <form class="input" id="login-form" action="login" method="post">
-        <label for="profile-picture">Profile Picture:</label>
-        <div id="profile-picture" class="profile-picture">
-            <img id="profile-picture-preview" src="/static/img//cat_placeholder.jpg" alt="Profile Picture">
-        </div>
+        <h2>Log in to Creative Studio</h2>
         <input type="text" id="login-email" name="login-email" placeholder="Email" required>
         <input type="text" id="login-password" name="login-password" placeholder="Password" required minlength="8">
         <span id="password-error" style="color: red;"></span>

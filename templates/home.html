@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
     <style>
@@ -58,7 +58,7 @@
     <div class="toolbar">
         <!-- Här är en placeholder logo-->
         <div class="logo">
-            <img src="images/creative_studio_placeholder_logo.png" alt="Creative Studio Logo">
+            <img src="{{ url_for('static', filename='img/creative_studio_placeholder_logo.png') }}" alt="Creative Studio Logo">
         </div>
         <div class="links">
             <a href="{{ url_for('home') }}">Home</a>
@@ -69,92 +69,54 @@
             <a href="{{ url_for('profile') }}">Profile</a>
         </div>
         <div class="profile">
-            <a href="profile.html">
-                <img id="toolbar-profile-picture" src="images/cat_placeholder.jpg" alt="Profile Picture">
+            <a href="{{ url_for('profile') }}">
+                {% if profile_pic != None %}
+                    <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/' + profile_pic)}}" alt="Profile Picture">
+                {% else %}
+                    <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}" alt="Profile Picture">
+                {% endif %}
             </a>
         </div>
-        
     </div>
+
     <div class="container">
         <div class="grid">
-            <!-- Add your card elements here -->
+            <!-- Loop over items_data to generate card elements -->
+            {% for item in items_data %}
             <div class="card">
                 <div class="image-container">
-                    <a href="images/image1.jpg" data-lightbox="image-1" data-title="Card 1">
-                        <img src="images/image1.jpg" alt="Image 1">
-                    </a>
-                    <button class="button save-button">Save</button>
-                    <div class="submenu">
-                        <a href="#">Make New Board</a>
-                        <a href="https://www.google.com">Google</a>
-                        <a href="https://www.stackoverflow.com">stackoverflow</a>
-                    </div>
-                </div>
-                <h3>Card 1</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-            <div class="card">
-                <div class="image-container">
-                    <a href="images/image2.jpg" data-lightbox="image-2" data-title="Card 2">
-                        <img src="images/image2.jpg" alt="Image 2">
-                    </a>
-                    <button class="button save-button">Save</button>
-                    <div class="submenu">
-                        <a href="#">Make New Board</a>
-                    </div>
-                </div>         <h3>Card 2</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-            <div class="card">
-                <div class="image-container">
-                    <a href="images/image3.jpg" data-lightbox="image-3" data-title="Card 3">
-                        <img src="images/image3.jpg" alt="Image 3">
+                    <a href="{{ item.LinkID }}" data-lightbox="image-1" data-title="{{ item.Title }}">
+                        <img src="{{ url_for('static', filename='img/' + item.ThumbnailImage) }}" alt="{{ item.Title }}">
                     </a>
                     <button class="button save-button">Save</button>
                     <div class="submenu">
                         <a href="#">Make New Board</a>
                     </div>
                 </div>
-                <h3>Card 3</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <h3>{{ item.Title }} - {{ item.Creator }}</h3>
+                <p>{{ item.Description }}</p>
             </div>
-            <!-- Add more card elements as needed -->
+            {% endfor %}
         </div>
     </div>
-    <!-- <script>
-        // Check if user is logged in
-        if (localStorage.getItem('isLoggedIn') !== 'true') {
-            window.location.href = 'login.html'; // Redirect to login page if user is not logged in
-        }
 
-        // Apply color palette preference
-        var color = localStorage.getItem('color');
-        if (color) {
-            document.body.className = color;
-        }
-
-        // Check if there is a profile picture stored in localStorage
-        var profilePicture = localStorage.getItem('profilePicture');
-        if (profilePicture) {
-            document.getElementById('toolbar-profile-picture').src = profilePicture;
-        }
-
+    <script>
         var saveButtons = document.querySelectorAll('.save-button');
-
+    
         saveButtons.forEach(function(button) {
             var submenu = button.nextElementSibling;
             submenu.style.display = 'none';
-
+    
             button.addEventListener('click', function(event) {
                 event.stopPropagation();
-
+    
                 var otherSubmenus = document.querySelectorAll('.submenu');
                 otherSubmenus.forEach(function(otherSubmenu) {
                     if (otherSubmenu !== submenu) {
                         otherSubmenu.style.display = 'none';
                     }
                 });
-
+    
                 if (submenu.style.display === 'none') {
                     submenu.style.display = 'block';
                 } else {
@@ -163,7 +125,7 @@
             });
         });
         
-        // Göm submenyn när sidan klickas på
+        // Hide the submenu when the page is clicked
         document.addEventListener('click', function() {
             var submenus = document.querySelectorAll('.submenu');
             submenus.forEach(function(submenu) {
@@ -177,8 +139,7 @@
                 event.stopPropagation();
             });
         });
-
-    </script> -->
+    </script>
        
 </body>
 </html>

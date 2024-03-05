@@ -72,7 +72,7 @@
         <div class="profile">
             <a href="profile.html">
             {% if profile_pic != None %}
-                <img id="toolbar-profile-picture" src="{{url_for('static', filename= profile_pic)}}">
+                <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/' + profile_pic)}}">
             {% else %}
                 <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}">
             {% endif %}
