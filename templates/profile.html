@@ -91,10 +91,10 @@
 
     <div class="card">
 
-        {% if profile_pic != None %}
-            <img id="profile_pic" src="{{url_for('static', filename= profile_pic)}}" , width="300" height="300">
+        {% if profile_pic %}
+            <img id="profile_pic" src="{{url_for('static', filename='img/' + profile_pic)}}" width="300" height="300">
         {% else %}
-            <img id="profile_pic" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}" , width="300" height="300">
+            <img id="profile_pic" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}" width="300" height="300">
         {% endif %}
         
         <h3>{{user_name}}</h3>
@@ -105,7 +105,7 @@
         {% endif %}
     </div>
 
-    <h1>Upload Image</h1>
+    <h3>Upload Image</h3>
     <form action="upload_profilepic" method="post" enctype="multipart/form-data">
         <input type="file" name="file" accept="image/*">
         <button type="submit">Upload</button>

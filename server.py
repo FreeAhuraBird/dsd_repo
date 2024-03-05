@@ -107,7 +107,6 @@ def signup():
         color = request.form.get('color', 'beige')
         file = request.files['profile-picture']
         print(username, password, email, color)
-        print("something")
         all_emails = get_column_data("Email", "Users")
         print(all_emails)
 
@@ -221,6 +220,7 @@ def profile():
         description = user_data[0][-1]
         user_name = user_data[0][1]
         profile_pic = user_data[0][5]
+        print(profile_pic)
 
         return render_template('profile.html', description=description, user_name=user_name, profile_pic=profile_pic)
 
