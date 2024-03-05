@@ -190,19 +190,19 @@ def upload_profilepic():
         if 'email' in session:
             user_email = session.get('email')
 
-        filename = str(uuid.uuid4()) + os.path.splitext(file.filename)[1] #get new filename
-        conn = mysql.connect()
-        cursor = conn.cursor()
+            filename = str(uuid.uuid4()) + os.path.splitext(file.filename)[1] #get new filename
+            conn = mysql.connect()
+            cursor = conn.cursor()
 
-        sql = "UPDATE Users SET Profile_Picture = %s WHERE email = %s"
-        cursor.execute(sql, (filename, user_email)) # store only the filename in the database
+            sql = "UPDATE Users SET Profile_Picture = %s WHERE email = %s"
+            cursor.execute(sql, (filename, user_email)) # store only the filename in the database
 
-        conn.commit()
-        cursor.close()
-        conn.close()
+            conn.commit()
+            cursor.close()
+            conn.close()
 
-        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), app.config['UPLOAD_PATH'], filename)
-        file.save(file_path) # upload new file
+            file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), app.config['UPLOAD_PATH'], filename)
+            file.save(file_path) # upload new file
         
     return redirect(url_for('profile'))
 
@@ -406,13 +406,40 @@ def music():
 
 @app.route('/people')
 def people():
-    if 'email' in session:
-        user_email = session.get('email')
-        user_data = get_user_data(user_email)
-        profile_pic = user_data[0][5]
-        print(profile_pic)
-    #user_id = get_logged_in_user_id()
-    return render_template('people.html', profile_pic=profile_pic)
+    # if 'email' in session:
+    #     user_email = session.get('email')
+    #     user_data = get_user_data(user_email)
+    #     profile_pic = user_data[0][5]
+    #     print(profile_pic)
+    # #user_id = get_logged_in_user_id()
+    # return render_template('people.html', profile_pic=profile_pic)
+
+    if 'email' not in session:
+            return redirect(url_for('index'))
+
+    user_email = session.get('email')
+    user_data = get_user_data(user_email)
+    profile_pic = user_data[0][5]
+    print(profile_pic)
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        # Fetch some sample data for illustration purposes
+        cursor.execute("SELECT * FROM Users")
+        user_data = [dict((cursor.description[i][0], value) 
+                      for i, value in enumerate(row)) for row in cursor.fetchall()]
+        pprint.pprint(user_data)
+        random.shuffle(user_data)
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('people.html', profile_pic=profile_pic, user_data=user_data)
 
 
 if __name__ == '__main__':
