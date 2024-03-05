@@ -1,65 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People</title>
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
     <style>
+        /* Add your custom CSS styles here */
 
-        .content {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 20px;
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-        }
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            flex: 0 0 75%;
-        }
-
-        .column {
-            flex: 0 0 48%;
-            margin: 10px 0;
-        }
-
-        .column img {
-            width: 100%; /* Set the width to 100% for responsiveness */
-            max-width: 200px; /* Set the maximum width for larger screens */
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Styles for Filters section */
-        .filters {
-            flex: 0 0 23%;
             padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white */
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-gap: 20px;
+        }
+        
+        .card {
             background-color: #f2f2f2;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease-in-out; /* add smooth hover effect */
+        }
+        
+        .card:hover {
+            transform: scale(1.05);
         }
 
-        .filters h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
         }
-
-        .filter-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
+        
+        .card h3 {
+            margin-top: 10px;
+            font-size: 18px;
         }
-
-        .filter-list li {
-            margin-bottom: 5px;
+        
+        .card p {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #888;
         }
+        
     </style>
 </head>
 <body>
-
     <div class="toolbar">
+        <!-- Här är en placeholder logo-->
         <div class="logo">
-            <img src="/static/img//creative_studio_placeholder_logo.png" alt="Creative Studio Logo">
+            <img src="{{ url_for('static', filename='img/creative_studio_placeholder_logo.png') }}" alt="Creative Studio Logo">
         </div>
         <div class="links">
             <a href="{{ url_for('home') }}">Home</a>
@@ -70,25 +69,74 @@
             <a href="{{ url_for('profile') }}">Profile</a>
         </div>
         <div class="profile">
-            <a href="profile.html">
-            {% if profile_pic != None %}
-                <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/' + profile_pic)}}">
-            {% else %}
-                <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}">
-            {% endif %}
-            
+            <a href="{{ url_for('profile') }}">
+                {% if profile_pic != None %}
+                    <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/' + profile_pic)}}" alt="Profile Picture">
+                {% else %}
+                    <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}" alt="Profile Picture">
+                {% endif %}
             </a>
         </div>
     </div>
 
-    <h1>Recent Art</h1>
-
-
-
-    <div class="Accounts">
-
-
+    <div class="container">
+        <div class="grid">
+            <!-- Loop over items_data to generate card elements -->
+            {% for users in user_data %}
+            <div class="card">
+                <div class="image-container">
+                    <a href="{{ users.UserID }}" data-lightbox="image-1" data-title="{{ users.UserID }}">
+                        <img src="{{ url_for('static', filename='img/' + users.Profile_Picture) }}" alt="{{ users.Username }}">
+                    </a>
+                    <button class="button follow-button">Follow</button>
+                </div>
+                <h3>{{ users.Username }}</h3>
+                <p>{{ users.Description }}</p>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
+    <script>
+        var saveButtons = document.querySelectorAll('.save-button');
+    
+        saveButtons.forEach(function(button) {
+            var submenu = button.nextElementSibling;
+            submenu.style.display = 'none';
+    
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
+    
+                var otherSubmenus = document.querySelectorAll('.submenu');
+                otherSubmenus.forEach(function(otherSubmenu) {
+                    if (otherSubmenu !== submenu) {
+                        otherSubmenu.style.display = 'none';
+                    }
+                });
+    
+                if (submenu.style.display === 'none') {
+                    submenu.style.display = 'block';
+                } else {
+                    submenu.style.display = 'none';
+                }
+            });
+        });
+        
+        // Hide the submenu when the page is clicked
+        document.addEventListener('click', function() {
+            var submenus = document.querySelectorAll('.submenu');
+            submenus.forEach(function(submenu) {
+                submenu.style.display = 'none';
+            });
+        });
+        
+        var submenus = document.querySelectorAll('.submenu');
+        submenus.forEach(function(submenu) {
+            submenu.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+    </script>
+       
 </body>
 </html>
