@@ -72,6 +72,7 @@
     <!-- description hämtas från varje users databas-->
 
     <div class="toolbar">
+
         <!-- Här är en placeholder logo-->
         <div class="logo">
             <img src="/static/img//creative_studio_placeholder_logo.png" alt="Creative Studio Logo">
@@ -81,12 +82,11 @@
             <a href="{{ url_for('movies') }}">Movies</a>
             <a href="{{ url_for('art') }}">Art</a>
             <a href="{{ url_for('music') }}">Music</a>
-            <a href="{{ url_for('logout') }}">Sign Out</a>
-            <a href="{{ url_for('people') }}">Find People</a>
-            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('login') }}">Sign In</a>
         </div>
-
-        
+        <div class="profile">
+            <img id="toolbar-profile-picture" src="/static/img/{{ profile_pic }}" alt="Profile Picture">
+        </div>
     </div>
 
     <div class="card">

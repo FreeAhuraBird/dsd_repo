@@ -1,65 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
     <style>
+        /* Add your custom CSS styles here */
 
-        .content {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 20px;
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-        }
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            flex: 0 0 75%;
-        }
-
-        .column {
-            flex: 0 0 48%;
-            margin: 10px 0;
-        }
-
-        .column img {
-            width: 100%; /* Set the width to 100% for responsiveness */
-            max-width: 200px; /* Set the maximum width for larger screens */
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Styles for Filters section */
-        .filters {
-            flex: 0 0 23%;
             padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white */
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-gap: 20px;
+        }
+        
+        .card {
             background-color: #f2f2f2;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease-in-out; /* add smooth hover effect */
+        }
+        
+        .card:hover {
+            transform: scale(1.05);
         }
 
-        .filters h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
         }
-
-        .filter-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
+        
+        .card h3 {
+            margin-top: 10px;
+            font-size: 18px;
         }
-
-        .filter-list li {
-            margin-bottom: 5px;
+        
+        .card p {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #888;
         }
+        
     </style>
 </head>
 <body>
-
     <div class="toolbar">
+        <!-- Här är en placeholder logo-->
         <div class="logo">
-            <img src="/static/img//creative_studio_placeholder_logo.png" alt="Creative Studio Logo">
+            <img src="{{ url_for('static', filename='img/creative_studio_placeholder_logo.png') }}" alt="Creative Studio Logo">
         </div>
         <div class="links">
             <a href="{{ url_for('home') }}">Home</a>
@@ -70,71 +69,77 @@
             <a href="{{ url_for('profile') }}">Profile</a>
         </div>
         <div class="profile">
-            <a href="profile.html">
-            {% if profile_pic != None %}
-                <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/' + profile_pic)}}">
-            {% else %}
-                <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}">
-            {% endif %}
-            
+            <a href="{{ url_for('profile') }}">
+                {% if profile_pic != None %}
+                    <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/' + profile_pic)}}" alt="Profile Picture">
+                {% else %}
+                    <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}" alt="Profile Picture">
+                {% endif %}
             </a>
         </div>
     </div>
 
-    <h1>Recent Movies</h1>
-
-
-
-    <div class="content">
-
-        <div class="row">
-            <div class="column">
-                <img src="https://th.bing.com/th/id/OIP.kPXe-mDEdRAEL6G4TcwjYAHaLK?rs=1&pid=ImgDetMain" alt="Joker">
+    <div class="container">
+        <div class="grid">
+            <!-- Loop over items_data to generate card elements -->
+            {% for movie in movie_data %}
+            <div class="card">
+                <div class="image-container">
+                    <a href="{{ movie.LinkID }}" data-lightbox="image-1" data-title="{{ movie.Title }}">
+                        <img src="{{ url_for('static', filename='img/' + movie.ThumbnailImage) }}" alt="{{ movie.Title }}">
+                    </a>
+                    <button class="button save-button">Save</button>
+                    <div class="submenu">
+                        <a href="#">Make New Board</a>
+                    </div>
+                </div>
+                <h3>{{ movie.Title }} - {{ movie.Creator }}</h3>
+                <p>{{ movie.Description }}</p>
             </div>
-            <div class="column">
-                <img src="https://th.bing.com/th/id/R.d2becb89fe56fc1332736175bb4d5098?rik=uE8zY9dG2UJfwg&pid=ImgRaw&r=0" alt="Scream">
-            </div>
-            <div class="column">
-                <img src="https://th.bing.com/th/id/R.372b34ef02969813dcaffd054d0efe28?rik=ysQrmYZDjpFPLw&pid=ImgRaw&r=0" alt="Fury">
-            </div>
-            <div class="column">
-                <img src="https://th.bing.com/th/id/R.7b46c961be3dc471a928dcdace5fbbe4?rik=0OusWs3yNqdL9w&riu=http%3a%2f%2f2.bp.blogspot.com%2f-tgaDwepszF0%2fU6vE32YuCvI%2fAAAAAAAAA_8%2fnVP8USPN12w%2fs1600%2f2014%2bhollywood%2bmovies%2bposter%2b1.jpg&ehk=PwTyjO1siCbbRvyGk%2fqmtfHC63vvIr9U9t1DZmaaQmk%3d&risl=&pid=ImgRaw&r=0" alt="Thor">
-            </div>
-            <!-- Repeat the above pattern for additional rows and images -->
-            <!-- Row 2 -->
-            <div class="column">
-                <img src="https://wallpapercave.com/wp/wp5474623.jpg" alt="Pacific rim">
-            </div>
-            <div class="column">
-                <img src="https://th.bing.com/th/id/OIP.7CbUf1vKJqFNc596HpSBkwHaNH?rs=1&pid=ImgDetMain" alt="Black Adam">
-            </div>
-            <div class="column">
-                <img src="https://th.bing.com/th/id/R.4550f76b1bf925f422240b84b3930bca?rik=rGRImVk9dCsS5A&pid=ImgRaw&r=0" alt="Deadpool3">
-            </div>
-            <div class="column">
-                <img src="https://www.imfdb.org/images/3/32/DW17.jpg" alt="Death wish">
-            </div>
-            <!-- Repeat for additional rows as needed -->
+            {% endfor %}
         </div>
-
-        <!-- Filters section -->
-        <div class="filters">
-            <h2>Filters</h2>
-            <ul class="filter-list">
-                <li><a href="#war">War</a></li>
-                <li><a href="#romance">Romance</a></li>
-                <li><a href="#horror">Horror</a></li>
-                <li><a href="#action">Action</a></li>
-                <li><a href="#fantasy">Fantasy</a></li>
-                <li><a href="#crime">Crime</a></li>
-                <li><a href="#comedy">Comedy</a></li>
-                <li><a href="#mystery">Mystery</a></li>
-                <li><a href="#documentary">Documentary</a></li>
-                <li><a href="#thriller">Thriller</a></li>
-            </ul>
-        </div>
-
     </div>
 
+    <script>
+        var saveButtons = document.querySelectorAll('.save-button');
+    
+        saveButtons.forEach(function(button) {
+            var submenu = button.nextElementSibling;
+            submenu.style.display = 'none';
+    
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
+    
+                var otherSubmenus = document.querySelectorAll('.submenu');
+                otherSubmenus.forEach(function(otherSubmenu) {
+                    if (otherSubmenu !== submenu) {
+                        otherSubmenu.style.display = 'none';
+                    }
+                });
+    
+                if (submenu.style.display === 'none') {
+                    submenu.style.display = 'block';
+                } else {
+                    submenu.style.display = 'none';
+                }
+            });
+        });
+        
+        // Hide the submenu when the page is clicked
+        document.addEventListener('click', function() {
+            var submenus = document.querySelectorAll('.submenu');
+            submenus.forEach(function(submenu) {
+                submenu.style.display = 'none';
+            });
+        });
+        
+        var submenus = document.querySelectorAll('.submenu');
+        submenus.forEach(function(submenu) {
+            submenu.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+    </script>
+       
 </body>
 </html>

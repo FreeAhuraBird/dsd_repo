@@ -333,14 +333,42 @@ def movies():
 
 @app.route('/art')
 def art():
-    if 'email' in session:
-        user_email = session.get('email')
-        user_data = get_user_data(user_email)
-        profile_pic = user_data[0][5]
-        print(profile_pic)
-    #user_id = get_logged_in_user_id()
+    # if 'email' in session:
+    #     user_email = session.get('email')
+    #     user_data = get_user_data(user_email)
+    #     profile_pic = user_data[0][5]
+    #     print(profile_pic)
+    # #user_id = get_logged_in_user_id()
 
-    return render_template('art.html', profile_pic=profile_pic)
+    # return render_template('art.html', profile_pic=profile_pic)
+    if 'email' not in session:
+        return redirect(url_for('index'))
+
+    user_email = session.get('email')
+    user_data = get_user_data(user_email)
+    profile_pic = user_data[0][5]
+    print(profile_pic)
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        # Fetch some sample data for illustration purposes
+        query = "SELECT * FROM Items WHERE Category = %s"
+        cursor.execute(query, ("Art",))
+        art_data = [dict((cursor.description[i][0], value) 
+                      for i, value in enumerate(row)) for row in cursor.fetchall()]
+        pprint.pprint(art_data)
+        random.shuffle(art_data)
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('art.html', profile_pic=profile_pic, art_data=art_data)
+
     # user_id = get_logged_in_user_id()
 
     # if user_id:
@@ -376,13 +404,34 @@ def buy_art(item_id):
 
 @app.route('/music')
 def music():
-    if 'email' in session:
-        user_email = session.get('email')
-        user_data = get_user_data(user_email)
-        profile_pic = user_data[0][5]
-        print(profile_pic)
-    #user_id = get_logged_in_user_id()
-    return render_template('music.html', profile_pic=profile_pic)
+    if 'email' not in session:
+        return redirect(url_for('index'))
+
+    user_email = session.get('email')
+    user_data = get_user_data(user_email)
+    profile_pic = user_data[0][5]
+    print(profile_pic)
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        # Fetch some sample data for illustration purposes
+        query = "SELECT * FROM Items WHERE Category = %s"
+        cursor.execute(query, ("Music",))
+        music_data = [dict((cursor.description[i][0], value) 
+                      for i, value in enumerate(row)) for row in cursor.fetchall()]
+        pprint.pprint(music_data)
+        random.shuffle(music_data)
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('music.html', profile_pic=profile_pic, music_data=music_data)
+
     # user_id = get_logged_in_user_id()
 
     # if user_id:
