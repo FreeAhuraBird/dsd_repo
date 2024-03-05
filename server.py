@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flaskext.mysql import MySQL
 from datetime import datetime, timedelta
 import os, uuid
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -12,6 +13,8 @@ app.config['MYSQL_DATABASE_USER'] = 'art@%'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'superbra'
 app.config['MYSQL_DATABASE_DB'] = 'art_database'
 app.config['MYSQL_DATABASE_HOST'] = '188.148.152.167'
+
+app.config['UPLOAD_PATH'] = 'static/img'
 
 mysql = MySQL(app)
 
@@ -35,16 +38,16 @@ def get_user_data(email):
     user_data = cursor.fetchall()
     return user_data
 
+# Behövde ändra den här för jag fick error att det var duplicate UserID
+# Det här sättet kollar istället "vad är max userid" och kör +1 så att de inte
+# blir några duplicate.
 def get_new_listid():
     conn = mysql.connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT UserID FROM Users")
-    list_data = cursor.fetchall()
-    print("____________")
-    print(list_data)
-    new_listid = list_data[0][0] + 1 #get new listid
-    print(list_data[0][0])
+    cursor.execute("SELECT MAX(UserID) FROM Users")
+    max_userid = cursor.fetchone()[0]
+    new_listid = max_userid + 1 if max_userid else 1
     return new_listid
 
 def get_column_data(column_name, table):
@@ -102,10 +105,17 @@ def signup():
         password = request.form['signup-password']
         email = request.form['signup-email']
         color = request.form.get('color', 'beige')
+        file = request.files['profile-picture']
         print(username, password, email, color)
-        print("something")
         all_emails = get_column_data("Email", "Users")
         print(all_emails)
+
+        if file:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+        else:
+            filename = 'cat_placeholder.jpg'
+            
         for emails in all_emails:
             for email_ in emails:
                 print(email_)
@@ -123,7 +133,7 @@ def signup():
 
             # Insert user into Users table
             cursor.execute("INSERT INTO Users (UserID, Username, Password, Email, Profile_Picture) VALUES (%s, %s, %s, %s, %s)",
-                           (userid, username, password, email, 'images/cat_placeholder.jpg'))
+                           (userid, username, password, email, filename))
 
             conn.commit()
             cursor.close()
@@ -185,16 +195,14 @@ def upload_profilepic():
         cursor = conn.cursor()
 
         sql = "UPDATE Users SET Profile_Picture = %s WHERE email = %s"
-        cursor.execute(sql, (filename, user_email))
+        cursor.execute(sql, (filename, user_email)) # store only the filename in the database
 
-
-# Define the values to insert into the columns
-        values = (filename, "condition_value")
         conn.commit()
         cursor.close()
         conn.close()
-        # this BELOW IS WRONG, DOESN'T WORK
-        file.save(os.path.join(app.config['/static/img/'], filename)) # upload new file
+
+        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), app.config['UPLOAD_PATH'], filename)
+        file.save(file_path) # upload new file
         
     return redirect(url_for('profile'))
 
@@ -212,6 +220,7 @@ def profile():
         description = user_data[0][-1]
         user_name = user_data[0][1]
         profile_pic = user_data[0][5]
+        print(profile_pic)
 
         return render_template('profile.html', description=description, user_name=user_name, profile_pic=profile_pic)
 
@@ -267,32 +276,30 @@ def profile():
 
 @app.route('/home')
 def home():
-    if 'email' in session:
-        user_email = session.get('email')
-        user_data = get_user_data(user_email)
-        profile_pic = user_data[0][5]
-        print(profile_pic)
-    #user_id = get_logged_in_user_id()
-    return render_template('home.html', profile_pic=profile_pic)
-
-    if user_id:
-        try:
-            conn = mysql.connect()
-            cursor = conn.cursor()
-
-            # Fetch some sample data for illustration purposes
-            cursor.execute("SELECT * FROM Items LIMIT 3")
-            items_data = cursor.fetchall()
-
-            return render_template('home.html', items_data=items_data)
-
-        except Exception as e:
-            return str(e)
-        finally:
-            cursor.close()
-            conn.close()
-    else:
+    if 'email' not in session:
         return redirect(url_for('index'))
+
+    user_email = session.get('email')
+    user_data = get_user_data(user_email)
+    profile_pic = user_data[0][5]
+    print(profile_pic)
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        # Fetch some sample data for illustration purposes
+        cursor.execute("SELECT * FROM Items")
+        items_data = [dict((cursor.description[i][0], value) 
+                      for i, value in enumerate(row)) for row in cursor.fetchall()]
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('home.html', profile_pic=profile_pic, items_data=items_data)
 
 @app.route('/movies')
 def movies():
