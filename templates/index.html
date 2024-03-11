@@ -19,15 +19,7 @@
             <a href="{{ url_for('music') }}">Music</a>
             <a href="{{ url_for('login') }}">Sign In</a>
         </div>
-        <div class="profile">
-            <a href="{{ url_for('profile') }}">
-                {% if profile_pic != None %}
-                    <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/' + profile_pic)}}" alt="Profile Picture">
-                {% else %}
-                    <img id="toolbar-profile-picture" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}" alt="Profile Picture">
-                {% endif %}
-            </a>
-        </div>
+
     </div>
     {% block content %}
     <form class="input" id="signup-form" action="signup" method="post" enctype="multipart/form-data">
