@@ -5,49 +5,7 @@
 <head>
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
     <style>
-        .container {
-            max-width: 700px;
-            margin-left:500px;
-            margin-top: 10px;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white */
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            grid-gap: 20px;
-        }
-        
-        .card {
-            background-color: #f2f2f2;
-            border-radius: 10px;
-            padding: 20px;
-            transition: transform 0.3s ease-in-out; /* add smooth hover effect */
-        }
-        
-        .card:hover {
-            transform: scale(1.05);
-        }
-
-        .card img {
-            width: 100%;
-            height: auto;
-            border-radius: 5px;
-        }
-        
-        .card h3 {
-            margin-top: 10px;
-            font-size: 18px;
-        }
-        
-        .card p {
-            margin-top: 5px;
-            font-size: 14px;
-            color: #888;
-        }
-        
+    
         .logo img {
             max-height: 40px;
         }
@@ -91,20 +49,43 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            margin: 0 auto;
+            justify-content: center;
             background-color: #f6bac0;
-            border-radius: 10px;
+            border-radius: 30px;
             padding: 20px;
             line-height: 1.5;
             max-width: 350px;
-            max-height: 1000px;
-            margin-left: 10px; /* center the card horizontally */
+            height: 500px;
             margin-top: 30px;
             font-size:20px;
             background-color: rgba(181, 116, 116, 0.4);
             -webkit-backdrop-filter: blur(5px);
             backdrop-filter: blur(5px);
         }
+        .card h1 {
+            text-align: center;
+        }
+        .card input {
+            width: 90%;
+            padding: 20px;
+            margin-bottom: 50px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: Arial, sans-serif; /* Set the font family */
+            font-size: 20px; /* Set the font size */
+            text-align: center;
+        }
+        .button {
+            width: 60%;
+            padding: 10px;
+            background-color: #9a2a2a;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
 
     </style>
 
@@ -135,41 +116,33 @@
     </div>
 
     <div class="card">
-
-        {% if profile_pic %}
-            <img id="profile_pic" src="{{url_for('static', filename='img/' + profile_pic)}}" width="300" height="300">
-        {% else %}
-            <img id="profile_pic" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}" width="300" height="300">
-        {% endif %}
-        
-        <h3>{{user_name}}</h3>
-        {% if description != None %}
-        <div class="description">
-            <p>{{ description }}</p>
-        </div>
-        {% endif %}
-    </div>
-
-    <h3>Upload Image</h3>
-    <form action="upload_profilepic" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*">
-        <button type="submit">Upload</button>
-    </form>
-
-    <div class="links">
-        <a href="{{ url_for('board') }}">Create new Board</a>
+        {% block content %}
+        <form class="create_board" id="create_board-form" action="create_board" method="post" enctype="multipart/form-data">
+            <h2>Create new Board</h2>
+            <input type="text" id="board-title" name="board-title" placeholder="Title">
+            <input type="text" id="board-descrption" name="board-descrption" placeholder="Description">
+            <button class="button" type="submit" name="create_board">Create</button>
+        </form>
+        {% endblock %}
     </div>
 
     <div class="container">
         <div class="grid">
             <!-- Loop over items_data to generate card elements -->
-            {% for board in lists_data %}
-            <a href="{{ url_for('show_list', list_id=board.ListID) }}">
+            {% for board in list_data %}
             <div class="card">
-                <h3>{{ board.Title }}</h3>
+                <div class="board-container">
+                    <a href="{{ board.LinkID }}" data-lightbox="image-1" data-title="{{ board.Title }}">
+                        <img src="{{ url_for('static', filename='img/' + board.ThumbnailImage) }}" alt="{{ board.Title }}">
+                    </a>
+                    <button class="button save-button">Save</button>
+                    <div class="submenu">
+                        <a href="#">Make New Board</a>
+                    </div>
+                </div>
+                <h3>{{ board.Title }} - {{ board.Creator }}</h3>
                 <p>{{ board.Description }}</p>
             </div>
-            </a>
             {% endfor %}
         </div>
     </div>
