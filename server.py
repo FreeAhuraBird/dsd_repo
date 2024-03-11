@@ -609,6 +609,13 @@ def people():
 
     return render_template('people.html', profile_pic=profile_pic, user_data=user_data)
 
+@app.route('/about')
+def about():
+    if 'email' in session:
+        user_email = session.get('email')
+        user_data = get_user_data(user_email)
+        profile_pic = user_data[0][5]
+    return render_template("/about.html", profile_pic=profile_pic)
 
 if __name__ == '__main__':
     app.run(debug=True)
