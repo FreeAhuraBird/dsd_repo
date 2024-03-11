@@ -78,6 +78,9 @@
             </a>
         </div>
     </div>
+    {% if empty_message %}
+        <h2>{{empty_message}}</h2>
+    {% endif %}
 
     <div class="container">
         <div class="grid">
@@ -88,10 +91,6 @@
                     <a href="{{ item.LinkID }}" data-lightbox="image-1" data-title="{{ item.Title }}">
                         <img src="{{ url_for('static', filename='img/' + item.ThumbnailImage) }}" alt="{{ item.Title }}">
                     </a>
-                    <button class="button save-button">Save</button>
-                    <div class="submenu">
-                        <a href="{{url_for('add_item', item_id=item.ItemID)}}">Add to Board</a>
-                    </div>
                 </div>
                 <h3>{{ item.Title }} - {{ item.Creator }}</h3>
                 <p>{{ item.Description }}</p>
@@ -99,47 +98,3 @@
             {% endfor %}
         </div>
     </div>
-<!-- 
-    <script>
-        var saveButtons = document.querySelectorAll('.save-button');
-    
-        saveButtons.forEach(function(button) {
-            var submenu = button.nextElementSibling;
-            submenu.style.display = 'none';
-    
-            button.addEventListener('click', function(event) {
-                event.stopPropagation();
-    
-                var otherSubmenus = document.querySelectorAll('.submenu');
-                otherSubmenus.forEach(function(otherSubmenu) {
-                    if (otherSubmenu !== submenu) {
-                        otherSubmenu.style.display = 'none';
-                    }
-                });
-    
-                if (submenu.style.display === 'none') {
-                    submenu.style.display = 'block';
-                } else {
-                    submenu.style.display = 'none';
-                }
-            });
-        });
-        
-        // Hide the submenu when the page is clicked
-        document.addEventListener('click', function() {
-            var submenus = document.querySelectorAll('.submenu');
-            submenus.forEach(function(submenu) {
-                submenu.style.display = 'none';
-            });
-        });
-        
-        var submenus = document.querySelectorAll('.submenu');
-        submenus.forEach(function(submenu) {
-            submenu.addEventListener('click', function(event) {
-                event.stopPropagation();
-            });
-        });
-    </script> -->
-       
-</body>
-</html>
