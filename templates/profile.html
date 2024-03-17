@@ -5,7 +5,48 @@
 <head>
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
     <style>
-    
+        .container {
+            flex-grow: 1;
+            max-width: 1000px;
+            margin-top: 30px;
+            padding: 50px;
+            border-radius: 10px;
+            margin-left: 10px;
+            background-color: rgba(181, 116, 116, 0.4);
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-gap: 20px;
+        }
+        
+        .card {
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.25s ease-in-out; /* add smooth hover effect */
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        
+        .card h3 {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        
+        .card p {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #888;
+        }
+        
         .logo img {
             max-height: 40px;
         }
@@ -40,8 +81,13 @@
             position: absolute;
         }
 
-        #profile_pic{
-            border-radius: 20px;
+        #profile_pic {
+            border-radius: 10px;
+            transition: transform 0.25s ease-in-out; /* add smooth hover effect */
+        }
+        
+        #profile_pic:hover {
+            transform: scale(1.03); /* Increase the size of the image by 5% when hovered */
         }
 
         .description,
@@ -64,13 +110,23 @@
             backdrop-filter: blur(5px);
         }
 
+        .profile-and-boards {
+            display: flex;
+        }
+
+        .board-card {
+            background-color: rgba(230, 230, 250, 0.4);
+            box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2); /* Skugga */
+        }
+
+        .board-card:hover {
+            transform: scale(1.03);
+        }
+
     </style>
 
 </head>
 <body>
-    <!-- profil bild måste hämtas databasen- fixas senare-->
-    <!-- description hämtas från varje users databas-->
-
     <div class="toolbar">
 
         <!-- Här är en placeholder logo-->
@@ -82,27 +138,45 @@
             <a href="{{ url_for('movies') }}">Movies</a>
             <a href="{{ url_for('art') }}">Art</a>
             <a href="{{ url_for('music') }}">Music</a>
-            <a href="{{ url_for('login') }}">Sign In</a>
+            <a href="{{ url_for('people') }}">Find People</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('logout') }}">Sign Out</a>
         </div>
         <div class="profile">
             <img id="toolbar-profile-picture" src="/static/img/{{ profile_pic }}" alt="Profile Picture">
         </div>
     </div>
 
-    <div class="card">
-
-        {% if profile_pic %}
-            <img id="profile_pic" src="{{url_for('static', filename='img/' + profile_pic)}}" width="300" height="300">
-        {% else %}
-            <img id="profile_pic" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}" width="300" height="300">
-        {% endif %}
-        
-        <h3>{{user_name}}</h3>
-        {% if description != None %}
-        <div class="description">
-            <p>{{ description }}</p>
+    <div class="profile-and-boards">
+        <div class="card">
+            {% if profile_pic %}
+                <img id="profile_pic" src="{{url_for('static', filename='img/' + profile_pic)}}" width="300" height="300">
+            {% else %}
+                <img id="profile_pic" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}" width="300" height="300">
+            {% endif %}
+            
+            <h3>{{user_name}}</h3>
+            {% if description != None %}
+            <div class="description">
+                <p>{{ description }}</p>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
+
+        <div class="container">
+            <div class="grid">
+                <!-- Loop over items_data to generate card elements -->
+                {% for board in lists_data %}
+                <a href="{{ url_for('show_list', list_id=board.ListID) }}">
+                <div class="card board-card">
+                    <h3>{{ board.Title }}</h3>
+                    <p>{{ board.Description }}</p>
+                </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 
     <h3>Upload Image</h3>
@@ -110,5 +184,10 @@
         <input type="file" name="file" accept="image/*">
         <button type="submit">Upload</button>
     </form>
+
+    <div class="links">
+        <a href="{{ url_for('board') }}">Create new Board</a>
+    </div>
+
 </body>
 </html>

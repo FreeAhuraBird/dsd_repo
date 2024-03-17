@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 #from Flask_session import Session
 from flaskext.mysql import MySQL
 from datetime import datetime, timedelta
-import os, uuid, pprint, random
+import os, uuid, pprint, random, datetime
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -12,7 +12,7 @@ app.secret_key = 'your_secret_key'
 app.config['MYSQL_DATABASE_USER'] = 'art@%'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'superbra'
 app.config['MYSQL_DATABASE_DB'] = 'art_database'
-app.config['MYSQL_DATABASE_HOST'] = '188.148.152.167'
+app.config['MYSQL_DATABASE_HOST'] = '85.230.109.96'
 
 app.config['UPLOAD_PATH'] = 'static/img'
 
@@ -38,6 +38,15 @@ def get_user_data(email):
     user_data = cursor.fetchall()
     return user_data
 
+def get_user_list(userid):
+    conn = mysql.connect()
+    cursor = conn.cursor()
+
+    query = "SELECT ListID FROM Lists WHERE UserID = %s"
+    cursor.execute(query, (userid,))
+    list_data = cursor.fetchall()
+    return list_data[0][0]
+
 # Behövde ändra den här för jag fick error att det var duplicate UserID
 # Det här sättet kollar istället "vad är max userid" och kör +1 så att de inte
 # blir några duplicate.
@@ -45,10 +54,29 @@ def get_new_listid():
     conn = mysql.connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT MAX(UserID) FROM Users")
-    max_userid = cursor.fetchone()[0]
-    new_listid = max_userid + 1 if max_userid else 1
+    cursor.execute("SELECT MAX(ListID) FROM Lists")
+    max_listid = cursor.fetchone()[0]
+    new_listid = max_listid + 1
+    print("newlistID:", new_listid)
     return new_listid
+
+def get_new_userid():
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT MAX(UserID) FROM Users")
+    max_listitemID = cursor.fetchall()[-1]
+    return max_listitemID + 1
+
+def get_new_ListItemID():
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT MAX(ListItemID) FROM ListItem")
+    list_itemid_data = cursor.fetchall()[0][0]
+    print(list_itemid_data)
+    max_listitemID = list_itemid_data + 1
+    print("Max listitemID:", max_listitemID)
+    return max_listitemID
+    
 
 def get_column_data(column_name, table):
     conn = mysql.connect()
@@ -123,7 +151,7 @@ def signup():
                     print(f"{email_} exists")
                     return render_template('index.html', existing_email=True)
         
-
+        # what is this? vvv
         userid = get_new_listid()
         print(userid)
         # Store user data in MySQL database
@@ -213,7 +241,110 @@ def logout():
 
 @app.route('/profile')
 def profile():
-    if 'email' in session:
+    if 'email' not in session:
+        return redirect(url_for('index'))
+    user_email = session.get('email')
+    user_id = get_userID_from_email(user_email)
+    user_data = get_user_data(user_email)
+    description = user_data[0][-1]
+    user_name = user_data[0][1]
+    profile_pic = user_data[0][5]
+    if user_data[0][4] is not None:
+        description = user_data[0][4]
+    print(profile_pic)
+    pprint.pprint(user_data)
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        # Fetch some sample data for illustration purposes
+        cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id))
+        lists_data = [dict((cursor.description[i][0], value) 
+                      for i, value in enumerate(row)) for row in cursor.fetchall()]
+        pprint.pprint(lists_data)
+        
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    #must add description to sent variables
+    return render_template('profile.html', description=description, user_name=user_name, profile_pic=profile_pic, lists_data=lists_data)
+
+@app.route('/settings')
+def settings():
+    if 'email' not in session:
+        return redirect(url_for('index'))
+    user_email = session.get('email')
+    user_id = get_userID_from_email(user_email)
+    user_data = get_user_data(user_email)
+    description = user_data[0][-1]
+    user_name = user_data[0][1]
+    profile_pic = user_data[0][5]
+    if user_data[0][4] is not None:
+        description = user_data[0][4]
+    print(profile_pic)
+    pprint.pprint(user_data)
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        # Fetch some sample data for illustration purposes
+        cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id))
+        lists_data = [dict((cursor.description[i][0], value) 
+                      for i, value in enumerate(row)) for row in cursor.fetchall()]
+        pprint.pprint(lists_data)
+        
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    #must add description to sent variables
+    return render_template('settings.html', description=description, user_name=user_name, profile_pic=profile_pic, lists_data=lists_data)
+
+@app.route('/change_username', methods=['POST'])
+def change_username():
+    pass
+
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    pass
+
+@app.route('/change_description', methods=['POST'])
+def change_description():
+    pass
+
+@app.route('/create_board', methods=['GET', 'POST'])
+def board():
+    if request.method == 'POST':
+        title = request.form['board-title']
+        description = request.form['board-descrption']
+        print(title, description)
+        user_email = session.get('email')
+        user_id = get_userID_from_email(user_email)
+        new_listid = get_new_listid()
+        current_time = datetime.datetime.now()
+        creationdate = f"{current_time.year}-{current_time.month}-{current_time.day}"
+        print(creationdate)
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        cursor.execute("INSERT INTO Lists (ListID, UserID, Title, Description, CreationDate) VALUES (%s, %s, %s, %s, %s)",
+                    (new_listid, user_id, title, description, creationdate))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return redirect(url_for("profile"))
+    else:
         user_email = session.get('email')
         user_id = get_userID_from_email(user_email)
         user_data = get_user_data(user_email)
@@ -222,57 +353,100 @@ def profile():
         profile_pic = user_data[0][5]
         print(profile_pic)
 
-        return render_template('profile.html', description=description, user_name=user_name, profile_pic=profile_pic)
+        try:
+            conn = mysql.connect()
+            cursor = conn.cursor()
 
-    else:
-        return redirect(url_for("login"))
-    # if user_id:
-    #     try:
-    #         conn = mysql.connect()
-    #         cursor = conn.cursor()
+            # Fetch some sample data for illustration purposes
+            cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id))
+            lists_data = [dict((cursor.description[i][0], value) 
+                        for i, value in enumerate(row)) for row in cursor.fetchall()]
+            pprint.pprint(lists_data)
 
-    #         # Fetch user data
-    #         cursor.execute("SELECT * FROM Users WHERE UserID = %s", (user_id,))
-    #         user_data = cursor.fetchone()
-    #         # Fetch playlists created by the user
-    #         cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id,))
-    #         user_playlists = cursor.fetchall()
+        except Exception as e:
+            return str(e)
+        finally:
+            cursor.close()
+            conn.close()
 
-    #         # Fetch playlists followed by the user
-    #         cursor.execute("""
-    #             SELECT L.ListID, L.Title, L.Description
-    #             FROM Lists L
-    #             INNER JOIN UserLists UL ON L.ListID = UL.ListID
-    #             WHERE UL.UserID = %s
-    #         """, (user_id,))
-    #         followed_playlists = cursor.fetchall()
+        return render_template('create_board.html', description=description, user_name=user_name, profile_pic=profile_pic, lists_data=lists_data)
 
-    #         return render_template('profile.html', user_data=user_data, user_playlists=user_playlists,
-    #                                followed_playlists=followed_playlists)
-    #     except Exception as e:
-    #         return str(e)
-    #     finally:
-    #         cursor.close()
-    #         conn.close()
-    # else:
-    #     return render_template('profile.html')
+@app.route('/remove_board', methods=['POST'])
+def remove_board():
+    pass
 
-# @app.route('/create_board')
-# def board():
-#     # take userid
-#     # create new board : insert userid, create listid, get title, descrption
-#     new_listid = get_new_listid()
-#     conn = mysql.connect()
-#     cursor = conn.cursor()
-
-#     # cursor.execute("INSERT INTO Users (UserID, Username, Password, Email, Profile_Picture) VALUES (%s, %s, %s, %s)",
-#     #                    (userid, username, password, email, 'images/cat_placeholder.jpg'))
-
-
-#     # Insert user into Users table
-#     cursor.execute("INSERT INTO Lists (ListID, UserID, Title, Description, CreationDate) VALUES (%s, %s, %s, %s, %s)",
-#                    (new_listid, 'userid', 'title', 'description', 'creationdate'))
+@app.route('/add_item', methods = ['GET', 'POST'])
+def add_item():
+    # Issue with this code: You cannot choose which list you want to put
+    # the item in. This should be handeled in frontend
+    if 'email' not in session:
+        return redirect(url_for('index'))
+    user_email = session.get('email')
+    user_id = get_userID_from_email(user_email)
+    item_id = request.args.get('item_id')
+    print("itemID:", item_id)
+    list_id = get_user_list(user_id)
     
+    # skaffa en lista från användarens 
+    listitem_id = get_new_ListItemID()
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        print(listitem_id, item_id, item_id)
+        # Fetch some sample data for illustration purposes
+        cursor.execute("INSERT INTO ListItem (ListItemID, ItemID, ListID) VALUES (%s, %s, %s)",
+                    (listitem_id, item_id, list_id)) 
+        conn.commit()     
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect('home')
+
+@app.route('/show_list', methods = ['GET', 'POST'])
+def show_list():
+    if 'email' not in session:
+        return redirect(url_for('index'))
+    user_email = session.get('email')
+    user_data = get_user_data(user_email)
+    profile_pic = user_data[0][5]
+    list_id = request.args.get('list_id')
+    print("listID: ", list_id)
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        # Fetch some sample data for illustration purposes
+        query = "SELECT ItemID FROM ListItem WHERE ListID = %s"
+        cursor.execute(query, (list_id,))
+        all_items = cursor.fetchall()
+        print("all items: ", all_items)
+        list_items = list()
+        for item in all_items:
+            list_items.append(item[0])
+        print(list_items)
+
+        # issue: Work only if lsit is not empty.
+        cursor.execute("SELECT * FROM Items WHERE ItemID")
+        query = "SELECT * FROM Items WHERE ItemID IN %s"
+        cursor.execute(query, (list_items,))
+        items_data = [dict((cursor.description[i][0], value) 
+                      for i, value in enumerate(row)) for row in cursor.fetchall()]
+        if items_data is None:
+            return render_template('show_list.html', profile_pic=profile_pic, empty_message="Empty List")
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('show_list.html', profile_pic=profile_pic, items_data=items_data)
+
 
 @app.route('/home')
 def home():
@@ -282,7 +456,7 @@ def home():
     user_email = session.get('email')
     user_data = get_user_data(user_email)
     profile_pic = user_data[0][5]
-    print(profile_pic)
+    #print(profile_pic)
 
     try:
         conn = mysql.connect()
@@ -292,7 +466,7 @@ def home():
         cursor.execute("SELECT * FROM Items")
         items_data = [dict((cursor.description[i][0], value) 
                       for i, value in enumerate(row)) for row in cursor.fetchall()]
-        pprint.pprint(items_data)
+        #pprint.pprint(items_data)
         random.shuffle(items_data)
 
     except Exception as e:
@@ -490,6 +664,13 @@ def people():
 
     return render_template('people.html', profile_pic=profile_pic, user_data=user_data)
 
+@app.route('/about')
+def about():
+    if 'email' in session:
+        user_email = session.get('email')
+        user_data = get_user_data(user_email)
+        profile_pic = user_data[0][5]
+    return render_template("/about.html", profile_pic=profile_pic)
 
 if __name__ == '__main__':
     app.run(debug=True)
