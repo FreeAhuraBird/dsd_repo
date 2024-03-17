@@ -249,7 +249,10 @@ def profile():
     description = user_data[0][-1]
     user_name = user_data[0][1]
     profile_pic = user_data[0][5]
+    if user_data[0][4] is not None:
+        description = user_data[0][4]
     print(profile_pic)
+    pprint.pprint(user_data)
 
     try:
         conn = mysql.connect()
@@ -260,7 +263,7 @@ def profile():
         lists_data = [dict((cursor.description[i][0], value) 
                       for i, value in enumerate(row)) for row in cursor.fetchall()]
         pprint.pprint(lists_data)
-        #first_item_in_board = 
+        
 
     except Exception as e:
         return str(e)
@@ -268,7 +271,55 @@ def profile():
         cursor.close()
         conn.close()
 
+    #must add description to sent variables
     return render_template('profile.html', description=description, user_name=user_name, profile_pic=profile_pic, lists_data=lists_data)
+
+@app.route('/settings')
+def settings():
+    if 'email' not in session:
+        return redirect(url_for('index'))
+    user_email = session.get('email')
+    user_id = get_userID_from_email(user_email)
+    user_data = get_user_data(user_email)
+    description = user_data[0][-1]
+    user_name = user_data[0][1]
+    profile_pic = user_data[0][5]
+    if user_data[0][4] is not None:
+        description = user_data[0][4]
+    print(profile_pic)
+    pprint.pprint(user_data)
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        # Fetch some sample data for illustration purposes
+        cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id))
+        lists_data = [dict((cursor.description[i][0], value) 
+                      for i, value in enumerate(row)) for row in cursor.fetchall()]
+        pprint.pprint(lists_data)
+        
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    #must add description to sent variables
+    return render_template('settings.html', description=description, user_name=user_name, profile_pic=profile_pic, lists_data=lists_data)
+
+@app.route('/change_username', methods=['POST'])
+def change_username():
+    pass
+
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    pass
+
+@app.route('/change_description', methods=['POST'])
+def change_description():
+    pass
 
 @app.route('/create_board', methods=['GET', 'POST'])
 def board():
@@ -319,6 +370,10 @@ def board():
             conn.close()
 
         return render_template('create_board.html', description=description, user_name=user_name, profile_pic=profile_pic, lists_data=lists_data)
+
+@app.route('/remove_board', methods=['POST'])
+def remove_board():
+    pass
 
 @app.route('/add_item', methods = ['GET', 'POST'])
 def add_item():
