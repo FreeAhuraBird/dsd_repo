@@ -123,6 +123,12 @@
             transform: scale(1.03);
         }
 
+        .create_board_link{
+            font-size: 140%;
+            color: #fff;
+            text-decoration: none;
+        }
+
     </style>
 
 </head>
@@ -141,6 +147,7 @@
             <a href="{{ url_for('people') }}">Find People</a>
             <a href="{{ url_for('about') }}">About</a>
             <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('settings') }}">Settings</a>
             <a href="{{ url_for('logout') }}">Sign Out</a>
         </div>
         <div class="profile">
@@ -165,6 +172,9 @@
         </div>
 
         <div class="container">
+            <div class="create_board_link">
+                <a href="{{ url_for('board') }}">Create new Board</a>
+            </div>
             <div class="grid">
                 <!-- Loop over items_data to generate card elements -->
                 {% for board in lists_data %}
@@ -177,16 +187,6 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
-
-    <h3>Upload Image</h3>
-    <form action="upload_profilepic" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*">
-        <button type="submit">Upload</button>
-    </form>
-
-    <div class="links">
-        <a href="{{ url_for('board') }}">Create new Board</a>
     </div>
 
 </body>

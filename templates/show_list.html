@@ -51,7 +51,27 @@
             font-size: 14px;
             color: #888;
         }
+
+        .delete_board {
+            color:black;
+
+        }
         
+        #delete_link{
+            text-decoration: none;
+        }
+
+        .empty_message {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+        }
+        #direct_home {
+            color:black;
+            font-size: 17px;
+        }
+
     </style>
 </head>
 <body>
@@ -68,6 +88,7 @@
             <a href="{{ url_for('people') }}">Find People</a>
             <a href="{{ url_for('about') }}">About</a>
             <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('settings') }}">Settings</a>
             <a href="{{ url_for('logout') }}">Sign Out</a>
         </div>
         <div class="profile">
@@ -80,11 +101,22 @@
             </a>
         </div>
     </div>
-    {% if empty_message %}
-        <h2>{{empty_message}}</h2>
-    {% endif %}
 
     <div class="container">
+        <a href="{{ url_for('remove_board', list_id=list_id) }}", id="delete_link">
+            <h4 class="delete_board">Delete Board</h4>
+        </a>
+        <div class="empty_message">
+            {% if empty_message %}
+                <h1>{{empty_message}}</h1>
+                <div>
+                    <a href="{{ url_for('home') }}", id="direct_home">
+                        <h4 class="explore">Explore new stuff</h4>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <h1>{{list_name}}</h1>
         <div class="grid">
             <!-- Loop over items_data to generate card elements -->
             {% for item in items_data %}
