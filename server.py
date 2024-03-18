@@ -467,6 +467,7 @@ def add_item():
     user_email = session.get('email')
     user_id = get_userID_from_email(user_email)
     item_id = request.args.get('item_id')
+    redirection = request.args.get('page')
     print("itemID:", item_id)
     list_id = get_user_list(user_id)
     
@@ -487,7 +488,7 @@ def add_item():
         cursor.close()
         conn.close()
 
-    return redirect('home')
+    return redirect(redirection)
 
 @app.route('/show_list', methods = ['GET', 'POST'])
 def show_list():
@@ -567,42 +568,37 @@ def home():
 
 @app.route('/movies')
 def movies():
-    if 'email' in session:
-        user_email = session.get('email')
-        user_data = get_user_data(user_email)
-        profile_pic = user_data[0][5]
-        print(profile_pic)
-    #user_id = get_logged_in_user_id()
-    return render_template('movies.html', profile_pic=profile_pic)
-    # if user_id:
-    #     try:
-    #         conn = mysql.connect()
-    #         cursor = conn.cursor()
+    if 'email' not in session:
+        return redirect(url_for('index'))
 
-    #         # Fetch some sample data for illustration purposes
-    #         cursor.execute("SELECT * FROM Items WHERE Category = 'Movies' LIMIT 8")
-    #         movies_data = cursor.fetchall()
+    user_email = session.get('email')
+    user_data = get_user_data(user_email)
+    profile_pic = user_data[0][5]
+    print(profile_pic)
 
-    #         return render_template('movies.html', items_data=movies_data)
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
 
-    #     except Exception as e:
-    #         return str(e)
-    #     finally:
-    #         cursor.close()
-    #         conn.close()
-    # else:
-    #     return redirect(url_for('index'))
+        # Fetch some sample data for illustration purposes
+        query = "SELECT * FROM Items WHERE Category = %s"
+        cursor.execute(query, ("Movie",))
+        movie_data = [dict((cursor.description[i][0], value) 
+                      for i, value in enumerate(row)) for row in cursor.fetchall()]
+        pprint.pprint(movie_data)
+        random.shuffle(movie_data)
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('movies.html', profile_pic=profile_pic, movie_data=movie_data)
+
 
 @app.route('/art')
 def art():
-    # if 'email' in session:
-    #     user_email = session.get('email')
-    #     user_data = get_user_data(user_email)
-    #     profile_pic = user_data[0][5]
-    #     print(profile_pic)
-    # #user_id = get_logged_in_user_id()
-
-    # return render_template('art.html', profile_pic=profile_pic)
     if 'email' not in session:
         return redirect(url_for('index'))
 
@@ -652,17 +648,9 @@ def art():
     # else:
     #     return redirect(url_for('index'))
 
-@app.route('/buy_art/<int:item_id>')
-def buy_art(item_id):
-    user_id = get_logged_in_user_id()
-
-    if user_id:
-        if reserve_item_for_user(item_id, user_id):
-            return f'Art with ItemID {item_id} reserved for purchase. Please complete the transaction within 10 minutes.'
-        else:
-            return f'Art with ItemID {item_id} is not available for purchase.'
-    else:
-        return redirect(url_for('index'))
+@app.route('/buy_art')
+def buy_art():
+    pass
 
 @app.route('/music')
 def music():
@@ -717,14 +705,6 @@ def music():
 
 @app.route('/people')
 def people():
-    # if 'email' in session:
-    #     user_email = session.get('email')
-    #     user_data = get_user_data(user_email)
-    #     profile_pic = user_data[0][5]
-    #     print(profile_pic)
-    # #user_id = get_logged_in_user_id()
-    # return render_template('people.html', profile_pic=profile_pic)
-
     if 'email' not in session:
             return redirect(url_for('index'))
 

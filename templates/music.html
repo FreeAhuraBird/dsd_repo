@@ -93,7 +93,7 @@
                     </a>
                     <button class="button save-button">Save</button>
                     <div class="submenu">
-                        <a href="#">Make New Board</a>
+                        <a href="{{url_for('add_item', item_id=music.ItemID, page='music')}}">Add to Board</a>
                     </div>
                 </div>
                 <h3>{{ music.Title }} - {{ music.Creator }}</h3>
