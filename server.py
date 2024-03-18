@@ -18,6 +18,7 @@ app.config['UPLOAD_PATH'] = 'static/img'
 
 mysql = MySQL(app)
 
+# functions
 def get_userID_from_email(email):
     conn = mysql.connect()
     cursor = conn.cursor()
@@ -47,9 +48,15 @@ def get_user_list(userid):
     list_data = cursor.fetchall()
     return list_data[0][0]
 
-# Behövde ändra den här för jag fick error att det var duplicate UserID
-# Det här sättet kollar istället "vad är max userid" och kör +1 så att de inte
-# blir några duplicate.
+def get_list_data(listid):
+    conn = mysql.connect()
+    cursor = conn.cursor()
+
+    query = "SELECT Title FROM Lists WHERE ListID = %s"
+    cursor.execute(query, (listid,))
+    list_data = cursor.fetchall()
+    return list_data
+
 def get_new_listid():
     conn = mysql.connect()
     cursor = conn.cursor()
@@ -76,7 +83,6 @@ def get_new_ListItemID():
     max_listitemID = list_itemid_data + 1
     print("Max listitemID:", max_listitemID)
     return max_listitemID
-    
 
 def get_column_data(column_name, table):
     conn = mysql.connect()
@@ -111,7 +117,7 @@ def reserve_item_for_user(item_id, user_id):
         cursor.close()
         conn.close()
 
-# Define routes
+# routes
 @app.route('/')
 def index():
     if 'email' in session:
@@ -258,7 +264,6 @@ def profile():
         conn = mysql.connect()
         cursor = conn.cursor()
 
-        # Fetch some sample data for illustration purposes
         cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id))
         lists_data = [dict((cursor.description[i][0], value) 
                       for i, value in enumerate(row)) for row in cursor.fetchall()]
@@ -271,7 +276,6 @@ def profile():
         cursor.close()
         conn.close()
 
-    #must add description to sent variables
     return render_template('profile.html', description=description, user_name=user_name, profile_pic=profile_pic, lists_data=lists_data)
 
 @app.route('/settings')
@@ -311,15 +315,78 @@ def settings():
 
 @app.route('/change_username', methods=['POST'])
 def change_username():
-    pass
+    new_username = request.form['new_username']
 
+    if new_username:
+        if 'email' in session:
+            user_email = session.get('email')
+
+            try:
+                conn = mysql.connect()
+                cursor = conn.cursor()
+
+                sql = "UPDATE Users SET Username = %s WHERE email = %s"
+                cursor.execute(sql, (new_username, user_email))
+
+                conn.commit()
+
+            except Exception as e:
+                return str(e)
+            finally:
+                cursor.close()
+                conn.close()
+
+    return redirect(url_for('settings'))
+            
 @app.route('/change_password', methods=['POST'])
 def change_password():
-    pass
+    new_password = request.form['new_password']
+
+    if new_password:
+        if 'email' in session:
+            user_email = session.get('email')
+
+            try:
+                conn = mysql.connect()
+                cursor = conn.cursor()
+
+                sql = "UPDATE Users SET Password = %s WHERE email = %s"
+                cursor.execute(sql, (new_password, user_email))
+
+                conn.commit()
+
+            except Exception as e:
+                return str(e)
+            finally:
+                cursor.close()
+                conn.close()
+        
+    return redirect(url_for('settings'))
 
 @app.route('/change_description', methods=['POST'])
 def change_description():
-    pass
+    new_description = request.form['new_description']
+
+    if new_description:
+        if 'email' in session:
+            user_email = session.get('email')
+
+            try:
+                conn = mysql.connect()
+                cursor = conn.cursor()
+
+                sql = "UPDATE Users SET Description = %s WHERE email = %s"
+                cursor.execute(sql, (new_description, user_email))
+
+                conn.commit()
+
+            except Exception as e:
+                return str(e)
+            finally:
+                cursor.close()
+                conn.close()
+
+    return redirect(url_for('settings'))
 
 @app.route('/create_board', methods=['GET', 'POST'])
 def board():
@@ -373,7 +440,23 @@ def board():
 
 @app.route('/remove_board', methods=['POST'])
 def remove_board():
-    pass
+    list_id = request.args.get('list_id')
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        sql = "DELETE FROM Lists WHERE ListID = %s"
+        cursor.execute(sql, (list_id,))
+
+        conn.commit()
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('profile'))
 
 @app.route('/add_item', methods = ['GET', 'POST'])
 def add_item():
@@ -411,10 +494,12 @@ def show_list():
     if 'email' not in session:
         return redirect(url_for('index'))
     user_email = session.get('email')
+    user_id = get_userID_from_email(user_email)
     user_data = get_user_data(user_email)
     profile_pic = user_data[0][5]
     list_id = request.args.get('list_id')
-    print("listID: ", list_id)
+    list_data = get_list_data(list_id)
+    list_name = list_data[0][0]
 
     try:
         conn = mysql.connect()
@@ -425,6 +510,8 @@ def show_list():
         cursor.execute(query, (list_id,))
         all_items = cursor.fetchall()
         print("all items: ", all_items)
+        if len(all_items) == 0:
+            return render_template('show_list.html', profile_pic=profile_pic, empty_message="Empty List")
         list_items = list()
         for item in all_items:
             list_items.append(item[0])
@@ -436,8 +523,9 @@ def show_list():
         cursor.execute(query, (list_items,))
         items_data = [dict((cursor.description[i][0], value) 
                       for i, value in enumerate(row)) for row in cursor.fetchall()]
-        if items_data is None:
-            return render_template('show_list.html', profile_pic=profile_pic, empty_message="Empty List")
+        print("items_data:", items_data)
+        # if items_data is None:
+        #     return render_template('show_list.html', profile_pic=profile_pic, empty_message="Empty List")
 
     except Exception as e:
         return str(e)
@@ -445,7 +533,7 @@ def show_list():
         cursor.close()
         conn.close()
 
-    return render_template('show_list.html', profile_pic=profile_pic, items_data=items_data)
+    return render_template('show_list.html', profile_pic=profile_pic, items_data=items_data, list_name=list_name, list_id=list_id)
 
 
 @app.route('/home')
