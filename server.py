@@ -536,7 +536,6 @@ def show_list():
 
     return render_template('show_list.html', profile_pic=profile_pic, items_data=items_data, list_name=list_name, list_id=list_id)
 
-
 @app.route('/home')
 def home():
     if 'email' not in session:
@@ -595,7 +594,6 @@ def movies():
         conn.close()
 
     return render_template('movies.html', profile_pic=profile_pic, movie_data=movie_data)
-
 
 @app.route('/art')
 def art():
@@ -681,27 +679,6 @@ def music():
         conn.close()
 
     return render_template('music.html', profile_pic=profile_pic, music_data=music_data)
-
-    # user_id = get_logged_in_user_id()
-
-    # if user_id:
-    #     try:
-    #         conn = mysql.connect()
-    #         cursor = conn.cursor()
-
-    #         # Fetch some sample data for illustration purposes
-    #         cursor.execute("SELECT * FROM Items WHERE Category = 'Music' LIMIT 8")
-    #         music_data = cursor.fetchall()
-
-    #         return render_template('music.html', items_data=music_data)
-
-    #     except Exception as e:
-    #         return str(e)
-    #     finally:
-    #         cursor.close()
-    #         conn.close()
-    # else:
-    #     return redirect(url_for('index'))
 
 @app.route('/people')
 def people():
