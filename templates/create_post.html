@@ -158,34 +158,30 @@
 
     <div class="profile-and-boards">
         <div class="card">
-            {% if profile_pic %}
-                <img id="profile_pic" src="{{url_for('static', filename='img/' + profile_pic)}}" width="300" height="300">
+            {% if uploaded_pic %}
+                <img id="uploaded_pic" src="{{url_for('static', filename='img/' + uploaded_pic)}}" width="300" height="300">
             {% else %}
-                <img id="profile_pic" src="{{url_for('static', filename='img/cat_placeholder.jpg')}}" width="300" height="300">
+                <img id="uploaded_pic" src="{{url_for('static', filename='img/upload_img.jpeg')}}" width="300" height="300">
             {% endif %}
+            <form action="create_item" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*">
+                <button type="post">Create Post</button>
+            </form>
             
-            <h3>{{user_name}}</h3>
-            {% if description != None %}
-            <div class="description">
-                <p>{{ description }}</p>
-            </div>
-            {% endif %}
+            
+   
         </div>
 
         <div class="container">
-            <div class="create_board_link">
-                <a href="{{ url_for('board') }}">Create new Board</a>
-            </div>
+
             <div class="grid">
-                <!-- Loop over items_data to generate card elements -->
-                {% for board in lists_data %}
-                <a href="{{ url_for('show_list', list_id=board.ListID) }}">
-                <div class="card board-card">
-                    <h3>{{ board.Title }}</h3>
-                    <p>{{ board.Description }}</p>
-                </div>
-                </a>
-                {% endfor %}
+                <form class="upload_art" id="upload_art-form" action="upload_art" method="post">
+                    <h3>Title</h3>
+                    <input type="text" id="title" name="title" placeholder="Title" required>
+                    <h3>Description</h3>
+                    <input type="text" id="description" name="description" placeholder="Description" style="width: 350px; height: 60px;">
+                    <button class="button" type="submit" name="upload_art">Create</button>
+                </form>
             </div>
         </div>
     </div>

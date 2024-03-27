@@ -438,6 +438,10 @@ def board():
 
         return render_template('create_board.html', description=description, user_name=user_name, profile_pic=profile_pic, lists_data=lists_data)
 
+@app.route('/upload_art', methods=['POST'])
+def upload_art():
+    pass
+
 @app.route('/remove_board', methods=['POST'])
 def remove_board():
     list_id = request.args.get('list_id')
@@ -535,6 +539,41 @@ def show_list():
         conn.close()
 
     return render_template('show_list.html', profile_pic=profile_pic, items_data=items_data, list_name=list_name, list_id=list_id)
+
+@app.route('/create')
+def create():
+
+    if 'email' not in session:
+        return redirect(url_for('index'))
+    user_email = session.get('email')
+    user_id = get_userID_from_email(user_email)
+    user_data = get_user_data(user_email)
+    description = user_data[0][-1]
+    user_name = user_data[0][1]
+    profile_pic = user_data[0][5]
+    print(profile_pic)
+
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        # Fetch some sample data for illustration purposes
+        cursor.execute("SELECT * FROM Lists WHERE UserID = %s", (user_id))
+        lists_data = [dict((cursor.description[i][0], value) 
+                    for i, value in enumerate(row)) for row in cursor.fetchall()]
+        pprint.pprint(lists_data)
+
+    except Exception as e:
+        return str(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('create_post.html', description=description, user_name=user_name, profile_pic=profile_pic, lists_data=lists_data)
+
+@app.route('/create_item')
+def create_item():
+    pass
 
 @app.route('/home')
 def home():

@@ -36,5 +36,49 @@
         {% endif %}
         {% endblock %}
     </form>
+        <!-- Javascript -->
+    <script>
+        function updateBodyClass() {
+            var checkedColor = document.querySelector('input[name="color"]:checked').value;
+            document.body.className = checkedColor;
+        }
+    
+        document.querySelectorAll('input[name="color"]').forEach(function(input) {
+            input.addEventListener('change', updateBodyClass);
+        });
+    
+        document.getElementById('profile-picture').addEventListener('click', function() {
+            document.getElementById('profile-picture-input').click();
+        });
+    
+        document.getElementById('profile-picture-input').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profile-picture-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(this.files[0]);
+        });
+    
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            var password = document.getElementById('signup-password').value;
+    
+            if (!/[A-Z]/.test(password)) {
+                document.getElementById('password-error').textContent = 'Lösenordet måste innehålla minst en stor bokstav.';
+                e.preventDefault();
+            }
+        });
+    
+        document.getElementById('profile-picture-input').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newProfilePicture = e.target.result;
+                document.getElementById('profile-picture-preview').src = newProfilePicture;
+                document.getElementById('toolbar-profile-picture').src = newProfilePicture;
+            };
+            reader.readAsDataURL(this.files[0]);
+        });
+    
+        updateBodyClass();
+    </script>
 </body>
 </html>
