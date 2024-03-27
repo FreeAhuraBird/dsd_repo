@@ -45,17 +45,18 @@ body.red .input {
 }
 
 body.yellow {
-   background-image: url('/static/img//yellow-background.jpg');
+   background-image: url('/static/img//beige-background.jpg');
    background-size: cover;
    background-repeat: no-repeat;
 }
 
 body.yellow .toolbar,
 body.yellow .input {
-   background-color: #295754;
+   background-color: #7e5d68;
    backdrop-filter: blur(10px); /* Blur effect */
-   background-color: #418b87(255, 0, 0, 0.5); /* Semi-transparent yellow */
+   background-color: #5a2323(255, 0, 0, 0.5); /* Semi-transparent yellow */
 }
+
 
 /* Den här delen har o göra med navbaren */
 .toolbar {
@@ -69,8 +70,6 @@ body.yellow .input {
    font-family: Arial, sans-serif;
    backdrop-filter: blur(10px);
    border: 2px solid white;
-
-   
 }
 
 .spacer {
@@ -420,3 +419,6 @@ h1 {
    margin-top: 10px; /* Adjust the top margin to reduce the gap */
 }
 
+.empty-space {
+   height: 25px; /* Add height to create space between elements */
+}
